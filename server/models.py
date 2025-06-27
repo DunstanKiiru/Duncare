@@ -101,3 +101,16 @@ class Medication(db.Model):
 
     treatment_id = db.Column(db.Integer, db.ForeignKey("treatments.id"))
     treatment = db.relationship("Treatment", back_populates="medications")
+
+
+class Billing(db.Model):
+    __tablename__ = "billings"
+
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.DateTime)
+    amount = db.Column(db.Float)
+    description = db.Column(db.String)
+    paid = db.Column(db.Boolean, default=False)
+
+    pet_id = db.Column(db.Integer, db.ForeignKey("pets.id"))
+    pet = db.relationship("Pet", back_populates="billings")

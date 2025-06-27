@@ -1,0 +1,48 @@
+import { useEffect, useState } from "react";
+import PetForm from "../Components/AddPet";
+import axios from "axios";
+
+function Pets() {
+  const [pets, setPets] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchPets = async () => {
+      try {
+        const response = await axios.get("/api/pets");
+        setPets(response.data);
+        setLoading(false);
+      } catch (err) {
+        setError("Failed to fetch pets data");
+        setLoading(false);
+      }
+    };
+
+    fetchPets();
+  }, []);
+
+  if (loading) {
+    return <div>Loading pets...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+
+  return (
+    <div>
+      <h1>Pets</h1>
+      <PetForm />
+      <ul>
+        {pets.map((pet) => (
+          <li key={pet.id}>
+            {pet.name} - {pet.species} - {pet.age} years old
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export default Pets;
