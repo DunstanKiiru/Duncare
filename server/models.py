@@ -15,7 +15,7 @@ class Staff(db.Model):
     treatments = relationship("Treatment", back_populates="staff", cascade="all, delete")
     
 # ----- One-to-Many: Owner → Pets -----
-class Owner(db.model):
+class Owner(db.Model):
     __tablename__ = "owners"
     
     id = Column(Integer, primary_key=True)
