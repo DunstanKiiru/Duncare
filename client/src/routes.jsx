@@ -29,7 +29,7 @@ const router = createBrowserRouter([
         element: <Staff/>
       },
       {
-        path: "/treatment",
+        path: "/treatments",
         element: <Treatments/>
       },
       {
