@@ -3,7 +3,8 @@ import Layout from "./Components/Layout";
 import Home from "./Pages/Home";
 import Error from "./Pages/Error";
 import Pets from "./Pages/Pets";
-import Owners from "./Pages/owners";
+import Owners from "./Pages/Owners";
+import Staff from "./Pages/Staff";
 
 const router = createBrowserRouter([
   {
@@ -19,8 +20,12 @@ const router = createBrowserRouter([
         element: <Pets />,
       },
       {
-        path: "owners",
+        path: "/owners",
         element: <Owners/>
+      },
+      {
+        path: "/staff",
+        element: <Staff/>
       },
       {
         path: "*",
