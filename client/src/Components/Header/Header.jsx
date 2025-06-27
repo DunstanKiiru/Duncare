@@ -8,7 +8,7 @@ const Header = () => {
     <section className="h-wrapper">
       <div className="h-container">
         <NavLink to="/">
-          <img src="/logo1.lpg" alt="MIS logo" width={100} className="logo" />
+          <img src="/logo1.jpg" alt="Duncare logo" width={100} className="logo" />
         </NavLink>
       </div>
 
@@ -16,9 +16,10 @@ const Header = () => {
         <NavLink to="/" end>
           Home
         </NavLink>
-        <NavLink to="/waterassets">Assets</NavLink>
-        <NavLink to="/about">About</NavLink>
-        <NavLink to="/contact">Contact</NavLink>
+        <NavLink to="/Pets">Pets</NavLink>
+        <NavLink to="/Staff">Staff</NavLink>
+        <NavLink to="/pets/new">Add Pet</NavLink>
+        <NavLink to="appointment">Appointments</NavLink>
         <NavLink to="/login" className="btn btn-outline-primary mt-2">
           Login
         </NavLink>

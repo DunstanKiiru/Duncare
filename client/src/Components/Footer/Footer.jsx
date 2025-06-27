@@ -9,15 +9,15 @@ const Footer = () => {
         <div className="f-left">
           <NavLink to="/">
             <img
-              src="/garissa.png"
-              alt="GARUWASCO Logo"
+              src="/logo1.png"
+              alt="Duncare Logo"
               width={100}
               className="footer-logo"
             />
           </NavLink>
           <p className="secondaryText">
-            GARUWASCO - Garissa Rural Water and Sanitation Corporation <br />
-            Safe, adequate and sustainable rural water services
+            Caring Hands For<br />
+            Healthy Paws
           </p>
         </div>
 
