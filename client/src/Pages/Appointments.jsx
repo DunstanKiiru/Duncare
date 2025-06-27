@@ -10,7 +10,7 @@ function Appointments() {
 
   useEffect(() => {
     axios
-      .get("/api/appointments")
+      .get(`${import.meta.env.VITE_API_BASE_URL}/api/appointments`)
       .then((res) => {
         setAppointments(res.data);
         setLoading(false);
