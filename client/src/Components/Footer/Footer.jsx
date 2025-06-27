@@ -25,20 +25,19 @@ const Footer = () => {
           <p className="primaryText mb-2">Quick Links</p>
           <nav className="f-menu vertical-menu">
             <NavLink to="/">Home</NavLink>
-            <NavLink to="/waterassets">Assets</NavLink>
-            <NavLink to="/about">About</NavLink>
-            <NavLink to="/contact">Contact</NavLink>
+            <NavLink to="/Pets">Pets</NavLink>
+            <NavLink to="/Staff">Staff</NavLink>
             <NavLink to="/login">Login</NavLink>
           </nav>
         </div>
 
         <div className="contact-section">
           <p className="contactText mt-3">
-            Garissa, Kenya
+            Nairobi, Kenya
             <br />
-            P.O BOX 563 - 70100
+            P.O BOX 1150 - 00100
             <br />
-            Email: info@garuwasco.co.ke
+            Email: info@Duncare.com
           </p>
         </div>
       </div>
