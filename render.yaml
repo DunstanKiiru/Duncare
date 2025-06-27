@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: duncare-app
+    env: python
+    buildCommand: |
+      pip install -r requirements.txt
+      npm install --prefix client
+      npm run build --prefix client
+    startCommand: gunicorn --chdir server app:app
+    envVars:
+      - key: DATABASE_URI
+        value: postgresql://duncare_db_user:VQr8OBnKxEzM3cjXf7WZimjKxXlGLiLc@dpg-d1f8qbfgi27c73cho980-a/duncare_db
+      - key: PYTHON_VERSION
+        value: 3.8.13
+    autoDeploy: true
+    buildFilter:
+      paths:
+        - server/
+        - client/
+        - requirements.txt
+        - render.yaml
+    postDeployScript: |
+      flask db upgrade
+      python seed.py
