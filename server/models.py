@@ -90,3 +90,14 @@ class PetTreatment(db.Model):
     
     pet = db.relationship("Pet", back_populates="pet_treatments")
     treatment = db.relationship("Treatment", back_populates="pet_treatments")
+    
+class Medication(db.Model):
+    __tablename__ = "medications"
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String)
+    dosage = db.Column(db.String)
+    frequency = db.Column(db.String)
+
+    treatment_id = db.Column(db.Integer, db.ForeignKey("treatments.id"))
+    treatment = db.relationship("Treatment", back_populates="medications")
