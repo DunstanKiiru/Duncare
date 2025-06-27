@@ -48,3 +48,15 @@ class Pet(db.Model):
 
     billings = db.relationship("Billing", back_populates="pet", cascade="all, delete")
 
+class Appointment(db.Model):
+    __tablename__ = "appointments"
+
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.DateTime)
+    reason = db.Column(db.String)
+
+    pet_id = db.Column(db.Integer, db.ForeignKey("pets.id"))
+    pet = db.relationship("Pet", back_populates="appointments")
+
+    staff_id = db.Column(db.Integer, db.ForeignKey("staff.id"))
+    staff = db.relationship("Staff", back_populates="appointments")
