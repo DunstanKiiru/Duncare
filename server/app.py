@@ -4,7 +4,7 @@ from flask import Flask, request, jsonify
 from flask_restful import Api, Resource
 from datetime import datetime
 
-from config import app, db, api  # assuming these are defined in config.py
+from server.config import app, db, api
 from models import Staff, Owner, Pet, Appointment, Treatment, PetTreatment, Medication, Billing
 
 # -- Serialization helpers --
