@@ -15,32 +15,4 @@ body,
   flex: 1;
 }
 
-.water-assets-container {
-  display: flex;
-  gap: 20px;
-  align-items: flex-start;
-  padding: 1rem;
-}
 
-.water-assets-form {
-  flex: 1 1 40%;
-}
-
-.water-assets-list {
-  flex: 1 1 60%;
-  overflow-x: auto;
-}
-
-.water-assets-list table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.pie-chart-container {
-  max-width: 420px;
-  margin: auto;
-}
-
-.chart-container {
-  padding: 1rem;
-}
