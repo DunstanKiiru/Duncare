@@ -94,6 +94,12 @@ class StaffList(Resource):
         db.session.add(staff)
         db.session.commit()
         return serialize_staff(staff), 201
+    
+    def delete(self, id):
+        staff = Staff.query.get_or_404(id)
+        db.session.delete(staff)
+        db.session.commit()
+        return {"message": "Staff deleted"}, 200
 
 class OwnerList(Resource):
     def get(self):
@@ -108,34 +114,27 @@ class OwnerList(Resource):
 
 class PetList(Resource):
     def get(self):
-        return [serialize_pet(p) for p in Pet.query.all()], 200
+        query = Pet.query
+        species = request.args.get('species')
+        breed = request.args.get('breed')
+        sex = request.args.get('sex')
+        owner_id = request.args.get('owner_id')
 
-    def post(self):
-        data = request.get_json()
-        pet = Pet(
-            name=data.get("name"),
-            species=data.get("species"),
-            breed=data.get("breed"),
-            sex=data.get("sex"),
-            color=data.get("color"),
-            dob=datetime.fromisoformat(data["dob"]) if data.get("dob") else None,
-            medical_notes=data.get("medical_notes"),
-            owner_id=data.get("owner_id")
-        )
-        db.session.add(pet)
-        db.session.flush()
+        if species:
+            query = query.filter_by(species=species)
+        if breed:
+            query = query.filter_by(breed=breed)
+        if sex:
+            query = query.filter_by(sex=sex)
+        if owner_id:
+            try:
+                owner_id_int = int(owner_id)
+                query = query.filter_by(owner_id=owner_id_int)
+            except ValueError:
+                pass  # ignore invalid owner_id filter
 
-        for t in data.get("treatments", []):
-            pt = PetTreatment(
-                pet=pet,
-                treatment_id=t["treatment_id"],
-                treatment_date=datetime.fromisoformat(t["treatment_date"]) if t.get("treatment_date") else None,
-                notes=t.get("notes")
-            )
-            db.session.add(pt)
-
-        db.session.commit()
-        return serialize_pet(pet), 201
+        pets = query.all()
+        return [serialize_pet(p) for p in pets], 200
 
 class PetDetail(Resource):
     def get(self, id):
@@ -217,16 +216,27 @@ class BillingList(Resource):
 
     def post(self):
         data = request.get_json()
-        billing = Billing(
-            date=datetime.fromisoformat(data["date"]) if data.get("date") else None,
-            amount=data.get("amount"),
-            description=data.get("description"),
-            paid=data.get("paid", False),
-            pet_id=data.get("pet_id")
+        bill = Billing(
+            pet_id=data["pet_id"],
+            date=data.get("date"),
+            amount=data["amount"],
+            description=data["description"],
+            paid=data.get("paid", False)
         )
-        db.session.add(billing)
+        db.session.add(bill)
         db.session.commit()
-        return serialize_billing(billing), 201
+        return serialize_billing(bill), 201
+
+    def patch(self, id):
+        bill = Billing.query.get(id)
+        if not bill:
+            return {"error": "Not found"}, 404
+        data = request.get_json()
+        if "paid" in data:
+            bill.paid = data["paid"]
+        db.session.commit()
+        return serialize_billing(bill), 200
+
 
 # === ROUTES ===
 
@@ -242,6 +252,126 @@ api.add_resource(BillingList, '/api/billings')
 @app.route('/')
 def index():
     return '<h1>Vet Management API is Running!</h1>'
+
+from flask import jsonify
+
+@app.route('/api/pets', methods=['GET'])
+def get_pets():
+    query = Pet.query
+    species = request.args.get('species')
+    breed = request.args.get('breed')
+    sex = request.args.get('sex')
+    owner_id = request.args.get('owner_id')
+
+    if species:
+        query = query.filter_by(species=species)
+    if breed:
+        query = query.filter_by(breed=breed)
+    if sex:
+        query = query.filter_by(sex=sex)
+    if owner_id:
+        try:
+            owner_id_int = int(owner_id)
+            query = query.filter_by(owner_id=owner_id_int)
+        except ValueError:
+            pass
+
+    pets = query.all()
+    return jsonify([serialize_pet(p) for p in pets]), 200
+
+@app.route('/api/pets', methods=['POST'])
+def create_pet():
+    data = request.get_json()
+    pet = Pet(
+        name=data.get("name"),
+        species=data.get("species"),
+        breed=data.get("breed"),
+        sex=data.get("sex"),
+        color=data.get("color"),
+        dob=datetime.fromisoformat(data["dob"]) if data.get("dob") else None,
+        medical_notes=data.get("medical_notes"),
+        owner_id=data.get("owner_id")
+    )
+    db.session.add(pet)
+    db.session.flush()
+
+    for t in data.get("treatments", []):
+        pt = PetTreatment(
+            pet=pet,
+            treatment_id=t["treatment_id"],
+            treatment_date=datetime.fromisoformat(t["treatment_date"]) if t.get("treatment_date") else None,
+            notes=t.get("notes")
+        )
+        db.session.add(pt)
+
+    db.session.commit()
+    return jsonify(serialize_pet(pet)), 201
+
+@app.route('/api/pets/<int:id>', methods=['GET'])
+def get_pet(id):
+    pet = Pet.query.get_or_404(id)
+    return jsonify(serialize_pet(pet)), 200
+
+@app.route('/api/pets/<int:id>', methods=['PATCH'])
+def update_pet(id):
+    pet = Pet.query.get_or_404(id)
+    data = request.get_json()
+    for field in ["name", "species", "breed", "sex", "color", "medical_notes", "owner_id"]:
+        setattr(pet, field, data.get(field, getattr(pet, field)))
+    if "dob" in data:
+        pet.dob = datetime.fromisoformat(data["dob"]) if data["dob"] else None
+
+    pet.pet_treatments.clear()
+    for t in data.get("treatments", []):
+        pt = PetTreatment(
+            pet=pet,
+            treatment_id=t["treatment_id"],
+            treatment_date=datetime.fromisoformat(t["treatment_date"]) if t.get("treatment_date") else None,
+            notes=t.get("notes")
+        )
+        db.session.add(pt)
+
+    db.session.commit()
+    return jsonify(serialize_pet(pet)), 200
+
+@app.route('/api/pets/<int:id>', methods=['DELETE'])
+def delete_pet(id):
+    pet = Pet.query.get_or_404(id)
+    db.session.delete(pet)
+    db.session.commit()
+    return jsonify({"message": "Pet deleted"}), 200
+
+from flask import jsonify
+
+@app.route('/api/billings', methods=['GET'])
+def get_billings():
+    billings = Billing.query.all()
+    return jsonify([serialize_billing(b) for b in billings]), 200
+
+@app.route('/api/billings', methods=['POST'])
+def create_billing():
+    data = request.get_json()
+    bill = Billing(
+        pet_id=data["pet_id"],
+        date=data.get("date"),
+        amount=data["amount"],
+        description=data["description"],
+        paid=data.get("paid", False)
+    )
+    db.session.add(bill)
+    db.session.commit()
+    return jsonify(serialize_billing(bill)), 201
+
+@app.route('/api/billings/<int:id>', methods=['PATCH'])
+def update_billing(id):
+    bill = Billing.query.get(id)
+    if not bill:
+        return jsonify({"error": "Not found"}), 404
+    data = request.get_json()
+    if "paid" in data:
+        bill.paid = data["paid"]
+    db.session.commit()
+    return jsonify(serialize_billing(bill)), 200
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)

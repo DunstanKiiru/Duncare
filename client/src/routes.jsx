@@ -7,6 +7,7 @@ import Owners from "./Pages/Owners";
 import Staff from "./Pages/Staff";
 import Treatments from "./Pages/Treatments";
 import Appointments from "./Pages/Appointments";
+import Billing from "./Pages/Billing";
 
 const router = createBrowserRouter([
   {
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
       {
         path: "/appointments",
         element: <Appointments />,
+      },
+      {
+        path: "/billings",
+        element: <Billing/>
       },
       {
         path: "*",
