@@ -5,7 +5,7 @@ from flask_restful import Api, Resource
 from datetime import datetime
 
 from server.config import app, db, api
-from models import Staff, Owner, Pet, Appointment, Treatment, PetTreatment, Medication, Billing
+from server.models import Staff, Owner, Pet, Appointment, Treatment, PetTreatment, Medication, Billing
 
 # -- Serialization helpers --
 
