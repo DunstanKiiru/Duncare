@@ -1,6 +1,8 @@
 from config import db
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Text, Float, Boolean
 from sqlalchemy.orm import relationship
+from datetime import datetime
+
 
 class Staff(db.Model):
     __tablename__ = "staff"
@@ -60,3 +62,31 @@ class Appointment(db.Model):
 
     staff_id = db.Column(db.Integer, db.ForeignKey("staff.id"))
     staff = db.relationship("Staff", back_populates="appointments")
+
+class Treatment(db.Model):
+    __tablename__ = "treatments"
+
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.DateTime)
+    description = db.Column(db.Text)
+
+    staff_id = db.Column(db.Integer, db.ForeignKey("staff.id"))
+    staff = db.relationship("Staff", back_populates="treatments")
+
+    medications = db.relationship("Medication", back_populates="treatment", cascade="all, delete")
+
+    # Many-to-many relationship with Pet via association table
+    pet_treatments = db.relationship("PetTreatment", back_populates="treatment", cascade="all, delete-orphan")
+    pets = db.relationship("Pet", secondary="pet_treatments", back_populates="treatments")
+    
+class PetTreatment(db.Model):
+    __tablename__ = "pet_treatments"
+    
+    pet_id = db.Column(db.Integer, db.ForeignKey("pets.id"), primary_key=True)
+    treatment_id = db.Column(db.Integer, db.ForeignKey("treatments.id"), primary_key=True)
+    
+    treatment_date = db.Column(db.DateTime, default=datetime.utcnow)
+    notes = db.Column(db.Text)
+    
+    pet = db.relationship("Pet", back_populates="pet_treatments")
+    treatment = db.relationship("Treatment", back_populates="pet_treatments")
