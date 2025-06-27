@@ -9,7 +9,7 @@ const Footer = () => {
         <div className="f-left">
           <NavLink to="/">
             <img
-              src="/logo1.png"
+              src="/logo1.jpg"
               alt="Duncare Logo"
               width={100}
               className="footer-logo"
