@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const AddOwner = () => {
+const AddOwner = ({ onAddOwner }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -27,10 +27,14 @@ const AddOwner = () => {
       });
 
       if (response.ok) {
+        const newOwner = await response.json();
         setMessage('Owner added successfully!');
         setName('');
         setEmail('');
         setPhone('');
+        if (onAddOwner) {
+          onAddOwner(newOwner);
+        }
       } else {
         const data = await response.json();
         setError(data.message || 'Failed to add owner.');
