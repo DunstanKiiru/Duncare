@@ -285,7 +285,7 @@ def not_found(e):
 # === Root Health Check ===
 @app.route('/')
 def index():
-    return '<h1>Vet Management API is Running!</h1>'
+    return render_template("index.html")
 
 # === Local Dev ===
 if __name__ == '__main__':
