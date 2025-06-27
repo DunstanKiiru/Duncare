@@ -6,6 +6,7 @@ import Pets from "./Pages/Pets";
 import Owners from "./Pages/Owners";
 import Staff from "./Pages/Staff";
 import Treatments from "./Pages/Treatments";
+import Appointments from "./Pages/Appointments";
 
 const router = createBrowserRouter([
   {
@@ -22,15 +23,19 @@ const router = createBrowserRouter([
       },
       {
         path: "/owners",
-        element: <Owners/>
+        element: <Owners />,
       },
       {
         path: "/staff",
-        element: <Staff/>
+        element: <Staff />,
       },
       {
         path: "/treatments",
-        element: <Treatments/>
+        element: <Treatments />,
+      },
+      {
+        path: "/appointments",
+        element: <Appointments />,
       },
       {
         path: "*",

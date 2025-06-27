@@ -24,10 +24,11 @@ const Footer = () => {
         <div className="quick-links-section">
           <p className="primaryText mb-2">Quick Links</p>
           <nav className="f-menu vertical-menu">
-            <NavLink to="/">Home</NavLink>
+            <NavLink to="/owners">Owners</NavLink>
             <NavLink to="/Pets">Pets</NavLink>
             <NavLink to="/Staff">Staff</NavLink>
-            <NavLink to="/login">Login</NavLink>
+            <NavLink to="/Treatments">Treatment</NavLink>
+            <NavLink to="appointments">Appointments</NavLink>
           </nav>
         </div>
 

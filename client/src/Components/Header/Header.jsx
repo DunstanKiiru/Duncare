@@ -20,7 +20,7 @@ const Header = () => {
         <NavLink to="/Pets">Pets</NavLink>
         <NavLink to="/Staff">Staff</NavLink>
         <NavLink to="/Treatments">Treatment</NavLink>
-        <NavLink to="appointment">Appointments</NavLink>
+        <NavLink to="appointments">Appointments</NavLink>
         <NavLink to="/login" className="btn btn-outline-primary mt-2">
           Login
         </NavLink>
