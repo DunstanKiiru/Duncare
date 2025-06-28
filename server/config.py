@@ -8,10 +8,6 @@ from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import MetaData
 
-# Load environment variables (if using .env file)
-from dotenv import load_dotenv
-load_dotenv()
-
 # Instantiate app
 app = Flask(__name__)
 

@@ -1,11 +1,13 @@
-
+import os
 from config import app, db, api, migrate
 from flask import request, jsonify, render_template
 from flask_restful import Resource
 from datetime import datetime
 
-# === Models ===
 from models import Staff, Owner, Pet, Appointment, Treatment, PetTreatment, Medication, Billing
+
+env = os.getenv("FLASK_ENV", "development")
+
 
 # === Serializers ===
 def serialize_staff(staff):
@@ -231,7 +233,6 @@ class BillingList(Resource):
         db.session.commit()
         return serialize_billing(bill), 200
 
-# === Register Resource Endpoints ===
 api.add_resource(StaffList, '/api/staff')
 api.add_resource(OwnerList, '/api/owners')
 api.add_resource(PetList, '/api/pets')
@@ -241,12 +242,12 @@ api.add_resource(TreatmentList, '/api/treatments')
 api.add_resource(MedicationList, '/api/medications')
 api.add_resource(BillingList, '/api/billings')
 
-# === React Frontend Catch-all ===
 @app.errorhandler(404)
 def not_found(e):
+    if request.path.startswith('/api/'):
+        return jsonify({"error": "Not Found"}), 404
     return render_template("index.html")
 
-# === Root Health Check ===
 @app.route('/')
 def index():
     return render_template("index.html")
