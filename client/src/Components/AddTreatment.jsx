@@ -1,14 +1,16 @@
-// Components/AddTreatment.jsx
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:5555";
+
 function AddTreatment({ onAddTreatment }) {
   const [staff, setStaff] = useState([]);
 
   useEffect(() => {
-    axios.get("/api/staff").then((res) => setStaff(res.data));
+    axios.get(`${API_BASE_URL}/api/staff`).then((res) => setStaff(res.data));
   }, []);
 
   const formik = useFormik({
@@ -23,7 +25,7 @@ function AddTreatment({ onAddTreatment }) {
     }),
     onSubmit: async (values, { resetForm }) => {
       try {
-        const res = await axios.post("/api/treatments", values);
+        const res = await axios.post(`${API_BASE_URL}/api/treatments`, values);
         onAddTreatment(res.data);
         resetForm();
       } catch (err) {
