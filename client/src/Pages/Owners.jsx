@@ -9,8 +9,9 @@ function Owners() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5555";
     axios
-      .get("/api/owners")
+      .get(`${API_BASE_URL}/api/owners`)
       .then((res) => {
         setOwners(res.data);
         setLoading(false);

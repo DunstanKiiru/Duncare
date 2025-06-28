@@ -10,8 +10,9 @@ function Billing() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5555";
     axios
-      .get("/api/billings")
+      .get(`${API_BASE_URL}/api/billings`)
       .then((res) => {
         setBills(res.data);
         setLoading(false);
@@ -27,7 +28,8 @@ function Billing() {
     if (!confirm) return;
 
     try {
-      const res = await axios.patch(`/api/billings/${id}`, { paid: true });
+      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5555";
+      const res = await axios.patch(`${API_BASE_URL}/api/billings/${id}`, { paid: true });
       setBills((prev) =>
         prev.map((b) => (b.id === id ? { ...b, paid: true } : b))
       );

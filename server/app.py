@@ -1,15 +1,12 @@
-import os
-from config import app, db, api, migrate
+#!/usr/bin/env python3
+
+from config import app, db, api  # Uses app from config.py
+from models import Staff, Owner, Pet, Appointment, Treatment, PetTreatment, Medication, Billing
 from flask import request, jsonify, render_template
 from flask_restful import Resource
 from datetime import datetime
 
-from models import Staff, Owner, Pet, Appointment, Treatment, PetTreatment, Medication, Billing
-
-env = os.getenv("FLASK_ENV", "development")
-
-
-# === Serializers ===
+# --- Serializers ---
 def serialize_staff(staff):
     return {
         "id": staff.id,
@@ -85,11 +82,11 @@ def serialize_billing(b):
         "pet_id": b.pet_id
     }
 
-# === API Resources ===
-
+# --- API Resources ---
 class StaffList(Resource):
     def get(self):
         return [serialize_staff(s) for s in Staff.query.all()], 200
+
     def post(self):
         data = request.get_json()
         staff = Staff(**data)
@@ -100,6 +97,7 @@ class StaffList(Resource):
 class OwnerList(Resource):
     def get(self):
         return [serialize_owner(o) for o in Owner.query.all()], 200
+
     def post(self):
         data = request.get_json()
         owner = Owner(**data)
@@ -145,6 +143,7 @@ class PetDetail(Resource):
     def get(self, id):
         pet = Pet.query.get_or_404(id)
         return serialize_pet(pet), 200
+
     def patch(self, id):
         pet = Pet.query.get_or_404(id)
         data = request.get_json()
@@ -163,6 +162,7 @@ class PetDetail(Resource):
             db.session.add(pt)
         db.session.commit()
         return serialize_pet(pet), 200
+
     def delete(self, id):
         pet = Pet.query.get_or_404(id)
         db.session.delete(pet)
@@ -172,6 +172,7 @@ class PetDetail(Resource):
 class AppointmentList(Resource):
     def get(self):
         return [serialize_appointment(a) for a in Appointment.query.all()], 200
+
     def post(self):
         data = request.get_json()
         appt = Appointment(
@@ -187,6 +188,7 @@ class AppointmentList(Resource):
 class TreatmentList(Resource):
     def get(self):
         return [serialize_treatment(t) for t in Treatment.query.all()], 200
+
     def post(self):
         data = request.get_json()
         treat = Treatment(
@@ -201,6 +203,7 @@ class TreatmentList(Resource):
 class MedicationList(Resource):
     def get(self):
         return [serialize_medication(m) for m in Medication.query.all()], 200
+
     def post(self):
         data = request.get_json()
         med = Medication(**data)
@@ -211,6 +214,7 @@ class MedicationList(Resource):
 class BillingList(Resource):
     def get(self):
         return [serialize_billing(b) for b in Billing.query.all()], 200
+
     def post(self):
         data = request.get_json()
         bill = Billing(
@@ -223,6 +227,7 @@ class BillingList(Resource):
         db.session.add(bill)
         db.session.commit()
         return serialize_billing(bill), 201
+
     def patch(self, id):
         bill = Billing.query.get(id)
         if not bill:
@@ -233,6 +238,7 @@ class BillingList(Resource):
         db.session.commit()
         return serialize_billing(bill), 200
 
+# --- API Route Registration ---
 api.add_resource(StaffList, '/api/staff')
 api.add_resource(OwnerList, '/api/owners')
 api.add_resource(PetList, '/api/pets')
@@ -242,16 +248,17 @@ api.add_resource(TreatmentList, '/api/treatments')
 api.add_resource(MedicationList, '/api/medications')
 api.add_resource(BillingList, '/api/billings')
 
+# --- Default Route ---
+@app.route('/')
+def index():
+    return render_template("index.html")
+
 @app.errorhandler(404)
 def not_found(e):
     if request.path.startswith('/api/'):
         return jsonify({"error": "Not Found"}), 404
     return render_template("index.html")
 
-@app.route('/')
-def index():
-    return render_template("index.html")
-
-# === Local Dev ===
+# --- Run App ---
 if __name__ == '__main__':
     app.run(port=5555, debug=True)

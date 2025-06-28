@@ -9,8 +9,9 @@ function Appointments() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5555";
     axios
-      .get("/api/appointments")
+      .get(`${API_BASE_URL}/api/appointments`)
       .then((res) => {
         setAppointments(res.data);
         setLoading(false);

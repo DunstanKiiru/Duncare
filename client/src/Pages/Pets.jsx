@@ -10,7 +10,8 @@ function Pets() {
   useEffect(() => {
     const fetchPets = async () => {
       try {
-        const response = await axios.get("/api/pets");
+        const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5555";
+        const response = await axios.get(`${API_BASE_URL}/api/pets`);
         setPets(response.data);
         setLoading(false);
       } catch (err) {
