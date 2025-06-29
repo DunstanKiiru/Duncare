@@ -35,13 +35,26 @@ function Staff() {
     <div>
       <h1>Staff</h1>
       <AddStaff onAddStaff={(member) => setStaff([...staff, member])} />
-      <ul>
-        {staff.map((s) => (
-          <li key={s.id}>
-            {s.name} ({s.role}) - {s.email}, {s.phone}
-          </li>
-        ))}
-      </ul>
+      <table className="table table-striped">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Role</th>
+            <th>Email</th>
+            <th>Phone</th>
+          </tr>
+        </thead>
+        <tbody>
+          {staff.map((s) => (
+            <tr key={s.id}>
+              <td>{s.name}</td>
+              <td>{s.role}</td>
+              <td>{s.email}</td>
+              <td>{s.phone}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }

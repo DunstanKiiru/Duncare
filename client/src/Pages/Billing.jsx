@@ -1,4 +1,3 @@
-// Pages/Billing.jsx
 import { useEffect, useState } from "react";
 import axios from "axios";
 import AddBillings from "../Components/AddBillings";
@@ -62,22 +61,38 @@ function Billing() {
 
       <AddBillings onAdd={(bill) => setBills([...bills, bill])} />
 
-      <ul>
-        {filteredBills.map((b) => (
-          <li key={b.id}>
-            <strong>Pet ID:</strong> {b.pet_id}, <strong>Amount:</strong> Ksh{" "}
-            {b.amount}, <strong>Status:</strong>{" "}
-            {b.paid ? (
-              <span style={{ color: "green" }}>Paid ✅</span>
-            ) : (
-              <>
-                <span style={{ color: "red" }}>Unpaid ❌</span>{" "}
-                <button onClick={() => markAsPaid(b.id)}>Mark as Paid</button>
-              </>
-            )}
-          </li>
-        ))}
-      </ul>
+      <table className="table table-striped">
+        <thead>
+          <tr>
+            <th>Pet ID</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filteredBills.map((b) => (
+            <tr key={b.id}>
+              <td>{b.pet_id}</td>
+              <td>Ksh {b.amount}</td>
+              <td>
+                {b.paid ? (
+                  <span style={{ color: "green" }}>Paid ✅</span>
+                ) : (
+                  <span style={{ color: "red" }}>Unpaid ❌</span>
+                )}
+              </td>
+              <td>
+                {!b.paid && (
+                  <button className="btn btn-primary btn-sm" onClick={() => markAsPaid(b.id)}>
+                    Mark as Paid
+                  </button>
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }

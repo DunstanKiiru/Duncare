@@ -1,4 +1,3 @@
-// Pages/Owners.jsx
 import { useEffect, useState } from "react";
 import axios from "axios";
 import AddOwner from "../Components/AddOwner";
@@ -29,13 +28,24 @@ function Owners() {
     <div>
       <h1>Owners</h1>
       <AddOwner onAddOwner={(owner) => setOwners([...owners, owner])} />
-      <ul>
-        {owners.map((o) => (
-          <li key={o.id}>
-            {o.name} - {o.email} - {o.phone}
-          </li>
-        ))}
-      </ul>
+      <table className="table table-striped">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+          </tr>
+        </thead>
+        <tbody>
+          {owners.map((o) => (
+            <tr key={o.id}>
+              <td>{o.name}</td>
+              <td>{o.email}</td>
+              <td>{o.phone}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }

@@ -1,4 +1,3 @@
-// Pages/Treatments.jsx
 import { useEffect, useState } from "react";
 import axios from "axios";
 import AddTreatment from "../Components/AddTreatment";
@@ -29,13 +28,22 @@ function Treatments() {
     <div>
       <h1>Treatments</h1>
       <AddTreatment onAddTreatment={(t) => setTreatments([...treatments, t])} />
-      <ul>
-        {treatments.map((t) => (
-          <li key={t.id}>
-            {t.description} on {t.date}
-          </li>
-        ))}
-      </ul>
+      <table className="table table-striped">
+        <thead>
+          <tr>
+            <th>Description</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {treatments.map((t) => (
+            <tr key={t.id}>
+              <td>{t.description}</td>
+              <td>{t.date}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }

@@ -35,13 +35,24 @@ function Pets() {
     <div>
       <h1>Pets</h1>
       <PetForm />
-      <ul>
-        {pets.map((pet) => (
-          <li key={pet.id}>
-            {pet.name} - {pet.species} - {pet.age} years old
-          </li>
-        ))}
-      </ul>
+      <table className="table table-striped">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Species</th>
+            <th>Age (years)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {pets.map((pet) => (
+            <tr key={pet.id}>
+              <td>{pet.name}</td>
+              <td>{pet.species}</td>
+              <td>{pet.age}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }

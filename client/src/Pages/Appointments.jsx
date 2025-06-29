@@ -1,4 +1,3 @@
-// Pages/Appointments.jsx
 import { useEffect, useState } from "react";
 import axios from "axios";
 import AddAppointment from "../Components/AddAppointment";
@@ -29,13 +28,24 @@ function Appointments() {
     <div>
       <h1>Appointments</h1>
       <AddAppointment onAdd={(a) => setAppointments([...appointments, a])} />
-      <ul>
-        {appointments.map((a) => (
-          <li key={a.id}>
-            Pet ID: {a.pet_id} | Staff ID: {a.staff_id} | Reason: {a.reason}
-          </li>
-        ))}
-      </ul>
+      <table className="table table-striped">
+        <thead>
+          <tr>
+            <th>Pet ID</th>
+            <th>Staff ID</th>
+            <th>Reason</th>
+          </tr>
+        </thead>
+        <tbody>
+          {appointments.map((a) => (
+            <tr key={a.id}>
+              <td>{a.pet_id}</td>
+              <td>{a.staff_id}</td>
+              <td>{a.reason}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
