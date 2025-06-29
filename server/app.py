@@ -186,9 +186,12 @@ class AppointmentList(Resource):
         db.session.commit()
         return serialize_appointment(appt), 201
 
+from sqlalchemy.orm import joinedload
+
 class TreatmentList(Resource):
     def get(self):
-        return [serialize_treatment(t) for t in Treatment.query.all()], 200
+        treatments = Treatment.query.options(joinedload(Treatment.pets)).all()
+        return [serialize_treatment(t) for t in treatments], 200
 
     def post(self):
         data = request.get_json()
