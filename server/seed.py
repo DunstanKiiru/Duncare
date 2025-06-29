@@ -105,8 +105,13 @@ if __name__ == '__main__':
         pet_treatments_list = []
         for treatment in treatments_list:
             # Assign 1-2 pets to each treatment
+            assigned_pets = set()
             for _ in range(randint(1, 2)):
                 pet = rc(pets_list)
+                # Avoid duplicate pet-treatment pairs
+                if pet.id in assigned_pets:
+                    continue
+                assigned_pets.add(pet.id)
                 pet_treatment = PetTreatment(
                     pet=pet,
                     treatment=treatment,
