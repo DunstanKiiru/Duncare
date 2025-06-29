@@ -1,11 +1,18 @@
 #!/usr/bin/env python3
-
+import os
 from config import app, db, api
 from models import Staff, Owner, Pet, Appointment, Treatment, PetTreatment, Medication, Billing
 from flask import request, jsonify, render_template
 from flask_restful import Resource
 from datetime import datetime
+from flask_cors import CORS
 
+env = os.getenv("FLASK_ENV", "development")
+
+if env == "production":
+    CORS(app, origins=["https://duncare.onrender.com"])
+else:
+    CORS(app)
 # --- Serializers ---
 def serialize_staff(staff):
     return {
