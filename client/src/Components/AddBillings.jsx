@@ -16,13 +16,14 @@ function AddBilling({ onAdd }) {
   const formik = useFormik({
     initialValues: {
       pet_id: "",
+      pet_name: "",
       date: "",
       amount: "",
       description: "",
       paid: false,
     },
     validationSchema: Yup.object({
-      pet_id: Yup.number().required("Pet is required"),
+      pet_name: Yup.string().required("Pet is required"),
       amount: Yup.number().required("Amount is required"),
       description: Yup.string().required("Description is required"),
     }),
@@ -45,22 +46,25 @@ function AddBilling({ onAdd }) {
 
         <div className="mb-3">
           <label className="form-label">Pet</label>
-          <select
-            name="pet_id"
-            className="form-select"
-            value={formik.values.pet_id}
-            onChange={formik.handleChange}
+          <input
+            name="pet_name"
+            className="form-control"
+            placeholder="Select Pet"
+            list="pets-list"
+            value={formik.values.pet_name || ""}
+            onChange={(e) => {
+              formik.setFieldValue("pet_name", e.target.value);
+              formik.setFieldValue("pet_id", "");
+            }}
             onBlur={formik.handleBlur}
-          >
-            <option value="">-- Select Pet --</option>
+          />
+          <datalist id="pets-list">
             {pets.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.name}
-              </option>
+              <option key={p.id} value={p.name} />
             ))}
-          </select>
-          {formik.touched.pet_id && formik.errors.pet_id && (
-            <div className="text-danger">{formik.errors.pet_id}</div>
+          </datalist>
+          {formik.touched.pet_name && formik.errors.pet_name && (
+            <div className="text-danger">{formik.errors.pet_name}</div>
           )}
         </div>
 

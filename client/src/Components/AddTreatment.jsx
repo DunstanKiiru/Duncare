@@ -21,11 +21,13 @@ function AddTreatment({ onAddTreatment }) {
       description: "",
       staff_id: "",
       pet_id: "",
+      staff_name: "",
+      pet_name: "",
     },
     validationSchema: Yup.object({
       description: Yup.string().required("Required"),
-      staff_id: Yup.number().required("Required"),
-      pet_id: Yup.number().required("Required"),
+      staff_name: Yup.string().required("Required"),
+      pet_name: Yup.string().required("Required"),
     }),
     onSubmit: async (values, { resetForm }) => {
       try {
@@ -54,40 +56,46 @@ function AddTreatment({ onAddTreatment }) {
           <small className="text-danger">{formik.errors.description}</small>
         )}
 
-        <select
-          name="pet_id"
-          className="form-select mb-2"
-          onChange={formik.handleChange}
-          value={formik.values.pet_id}
+        <input
+          name="pet_name"
+          className="form-control mb-2"
+          placeholder="Select Pet"
+          list="pets-list"
+          value={formik.values.pet_name || ""}
+          onChange={(e) => {
+            formik.setFieldValue("pet_name", e.target.value);
+            formik.setFieldValue("pet_id", "");
+          }}
           onBlur={formik.handleBlur}
-        >
-          <option value="">Select Pet</option>
+        />
+        <datalist id="pets-list">
           {pets.map((p) => (
-            <option key={p.id} value={p.id}>
-              {p.name}
-            </option>
+            <option key={p.id} value={p.name} />
           ))}
-        </select>
-        {formik.touched.pet_id && formik.errors.pet_id && (
-          <small className="text-danger">{formik.errors.pet_id}</small>
+        </datalist>
+        {formik.touched.pet_name && formik.errors.pet_name && (
+          <small className="text-danger">{formik.errors.pet_name}</small>
         )}
 
-        <select
-          name="staff_id"
-          className="form-select mb-2"
-          onChange={formik.handleChange}
-          value={formik.values.staff_id}
+        <input
+          name="staff_name"
+          className="form-control mb-2"
+          placeholder="Select Staff"
+          list="staff-list"
+          value={formik.values.staff_name || ""}
+          onChange={(e) => {
+            formik.setFieldValue("staff_name", e.target.value);
+            formik.setFieldValue("staff_id", "");
+          }}
           onBlur={formik.handleBlur}
-        >
-          <option value="">Select Staff</option>
+        />
+        <datalist id="staff-list">
           {staff.map((s) => (
-            <option key={s.id} value={s.id}>
-              {s.name}
-            </option>
+            <option key={s.id} value={s.name} />
           ))}
-        </select>
-        {formik.touched.staff_id && formik.errors.staff_id && (
-          <small className="text-danger">{formik.errors.staff_id}</small>
+        </datalist>
+        {formik.touched.staff_name && formik.errors.staff_name && (
+          <small className="text-danger">{formik.errors.staff_name}</small>
         )}
 
         <div className="text-center">

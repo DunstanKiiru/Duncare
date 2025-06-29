@@ -38,13 +38,12 @@ function Pets() {
   // Sort pets by id descending (newest first)
   const sortedPets = [...pets].sort((a, b) => b.id - a.id);
 
-  // Filter pets based on search query (name, species, age)
+  // Filter pets based on search query (name, species)
   const filteredPets = sortedPets.filter((pet) => {
     const query = searchQuery.toLowerCase();
     return (
       pet.name.toLowerCase().includes(query) ||
-      pet.species.toLowerCase().includes(query) ||
-      pet.age.toString().includes(query)
+      pet.species.toLowerCase().includes(query)
     );
   });
 
@@ -87,20 +86,22 @@ function Pets() {
         <table className="table table-striped table-bordered">
           <thead>
             <tr>
-              <th>Name</th>
-              <th>Species</th>
-              <th>Age (years)</th>
-            </tr>
-          </thead>
-          <tbody>
-            {paginatedPets.map((pet) => (
-              <tr key={pet.id}>
-                <td>{pet.name}</td>
-                <td>{pet.species}</td>
-                <td>{pet.age}</td>
-              </tr>
-            ))}
-          </tbody>
+          <th>Name</th>
+          <th>Species</th>
+          <th>Breed</th>
+          <th>Sex</th>
+        </tr>
+      </thead>
+      <tbody>
+        {paginatedPets.map((pet) => (
+          <tr key={pet.id}>
+            <td>{pet.name}</td>
+            <td>{pet.species}</td>
+            <td>{pet.breed}</td>
+            <td>{pet.sex}</td>
+          </tr>
+        ))}
+      </tbody>
         </table>
 
         <nav aria-label="Pets pagination">

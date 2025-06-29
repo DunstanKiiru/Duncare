@@ -4,6 +4,7 @@ import AddBillings from "../Components/AddBillings";
 
 function Billing() {
   const [bills, setBills] = useState([]);
+  const [pets, setPets] = useState([]);
   const [filter, setFilter] = useState("all");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -11,9 +12,12 @@ function Billing() {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  const [sortField, setSortField] = useState("id");
+  const [sortDirection, setSortDirection] = useState("desc");
 
   useEffect(() => {
     const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5555";
+    // Fetch billings
     axios
       .get(`${API_BASE_URL}/api/billings`)
       .then((res) => {
@@ -23,6 +27,15 @@ function Billing() {
       .catch(() => {
         setError("Failed to fetch billing data");
         setLoading(false);
+      });
+    // Fetch pets
+    axios
+      .get(`${API_BASE_URL}/api/pets`)
+      .then((res) => {
+        setPets(res.data);
+      })
+      .catch(() => {
+        setError("Failed to fetch pets data");
       });
   }, []);
 
@@ -41,22 +54,37 @@ function Billing() {
     }
   };
 
-  // Sort bills by id descending (newest first)
-  const sortedBills = [...bills].sort((a, b) => b.id - a.id);
+  const sortedBills = [...bills].sort((a, b) => {
+    let aValue = a[sortField];
+    let bValue = b[sortField];
 
-  // Filter bills based on filter dropdown and search query (pet_id, amount)
+    // For status sorting, convert boolean to number for comparison
+    if (sortField === "paid") {
+      aValue = aValue ? 1 : 0;
+      bValue = bValue ? 1 : 0;
+    }
+
+    if (aValue < bValue) return sortDirection === "asc" ? -1 : 1;
+    if (aValue > bValue) return sortDirection === "asc" ? 1 : -1;
+    return 0;
+  });
+
   const filteredBills = sortedBills.filter((b) => {
     if (filter === "paid" && !b.paid) return false;
     if (filter === "unpaid" && b.paid) return false;
 
     const query = searchQuery.toLowerCase();
+    // Search in pet name as well
+    const pet = pets.find((p) => p.id === b.pet_id);
+    const petName = pet ? pet.name.toLowerCase() : "";
     return (
       b.pet_id.toString().includes(query) ||
-      b.amount.toString().includes(query)
+      b.amount.toString().includes(query) ||
+      petName.includes(query)
     );
   });
 
-  // Pagination calculations
+  // Pagination
   const totalPages = Math.ceil(filteredBills.length / itemsPerPage);
   const paginatedBills = filteredBills.slice(
     (currentPage - 1) * itemsPerPage,
@@ -68,8 +96,24 @@ function Billing() {
     setCurrentPage(newPage);
   };
 
+  const toggleSortByStatus = () => {
+    if (sortField === "paid") {
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+    } else {
+      setSortField("paid");
+      setSortDirection("asc");
+    }
+    setCurrentPage(1);
+  };
+
   if (loading) return <div>Loading bills...</div>;
   if (error) return <div>{error}</div>;
+
+  // Helper to get pet name by pet_id
+  const getPetName = (pet_id) => {
+    const pet = pets.find((p) => p.id === pet_id);
+    return pet ? pet.name : pet_id;
+  };
 
   return (
     <div className="billing-container d-flex flex-wrap gap-4 justify-content-between">
@@ -116,16 +160,18 @@ function Billing() {
         <table className="table table-striped table-bordered">
           <thead>
             <tr>
-              <th>Pet ID</th>
+              <th>Pet Name</th>
               <th>Amount</th>
-              <th>Status</th>
+              <th style={{ cursor: "pointer" }} onClick={toggleSortByStatus}>
+                Status {sortField === "paid" ? (sortDirection === "asc" ? "▲" : "▼") : ""}
+              </th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             {paginatedBills.map((b) => (
               <tr key={b.id}>
-                <td>{b.pet_id}</td>
+                <td>{getPetName(b.pet_id)}</td>
                 <td>Ksh {b.amount}</td>
                 <td>
                   {b.paid ? (

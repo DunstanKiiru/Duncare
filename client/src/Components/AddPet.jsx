@@ -22,13 +22,15 @@ function AddPet({ onAddPet }) {
       species: "",
       breed: "",
       sex: "",
-      color: "",
       owner_id: "",
+      owner_name: "",
     },
     validationSchema: Yup.object({
       name: Yup.string().required("Name is required"),
       species: Yup.string().required("Species is required"),
-      owner_id: Yup.number().required("Owner is required"),
+      breed: Yup.string().required("Breed is required"),
+      sex: Yup.string().required("Sex is required"),
+      owner_name: Yup.string().required("Owner is required"),
     }),
     onSubmit: async (values, { resetForm }) => {
       try {
@@ -82,7 +84,7 @@ function AddPet({ onAddPet }) {
           <input
             name="breed"
             className="form-control"
-            placeholder="Breed (optional)"
+            placeholder="Breed"
             value={formik.values.breed}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
@@ -94,43 +96,38 @@ function AddPet({ onAddPet }) {
           <input
             name="sex"
             className="form-control"
-            placeholder="Sex (optional)"
+            placeholder="Sex"
             value={formik.values.sex}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
-        </div>
-
-        <div className="mb-3">
-          <label className="form-label">Color</label>
-          <input
-            name="color"
-            className="form-control"
-            placeholder="Color (optional)"
-            value={formik.values.color}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-          />
+          {formik.touched.sex && formik.errors.sex && (
+            <div className="text-danger">{formik.errors.sex}</div>
+          )}
         </div>
 
         <div className="mb-3">
           <label className="form-label">Owner</label>
-          <select
-            name="owner_id"
-            className="form-select"
-            value={formik.values.owner_id}
-            onChange={formik.handleChange}
+          <input
+            name="owner_name"
+            className="form-control"
+            placeholder="Owner name"
+            list="owners-list"
+            value={formik.values.owner_name || ""}
+            onChange={(e) => {
+              formik.setFieldValue("owner_name", e.target.value);
+              // Optionally clear owner_id if name changes
+              formik.setFieldValue("owner_id", "");
+            }}
             onBlur={formik.handleBlur}
-          >
-            <option value="">Select Owner</option>
+          />
+          <datalist id="owners-list">
             {owners.map((owner) => (
-              <option key={owner.id} value={owner.id}>
-                {owner.name}
-              </option>
+              <option key={owner.id} value={owner.name} />
             ))}
-          </select>
-          {formik.touched.owner_id && formik.errors.owner_id && (
-            <div className="text-danger">{formik.errors.owner_id}</div>
+          </datalist>
+          {formik.touched.owner_name && formik.errors.owner_name && (
+            <div className="text-danger">{formik.errors.owner_name}</div>
           )}
         </div>
 

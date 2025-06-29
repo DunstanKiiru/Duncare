@@ -46,12 +46,9 @@ function Appointments() {
     return acc;
   }, {});
 
-  const sortedAppointments = [...appointments].sort((a, b) => {
-    if (a.date && b.date) {
-      return new Date(b.date) - new Date(a.date);
-    }
-    return b.id - a.id;
-  });
+const sortedAppointments = [...appointments].sort((a, b) => {
+  return b.id - a.id;
+});
 
   const filteredAppointments = sortedAppointments.filter((a) => {
     const petName = petMap[a.pet_id] || "";
@@ -83,7 +80,7 @@ function Appointments() {
         style={{ minWidth: "300px", maxWidth: "400px" }}
       >
         <h2 className="text-center">Add Appointment</h2>
-        <AddAppointment onAdd={(a) => setAppointments([...appointments, a])} />
+<AddAppointment onAdd={(a) => setAppointments([a, ...appointments])} />
       </div>
 
       <div className="appointments-list flex-grow-2" style={{ flex: "1 1 60%" }}>
@@ -103,7 +100,6 @@ function Appointments() {
         <table className="table table-striped table-bordered">
           <thead>
             <tr>
-              <th>Pet ID</th>
               <th>Pet Name</th>
               <th>Staff Name</th>
               <th>Reason</th>
@@ -113,7 +109,6 @@ function Appointments() {
           <tbody>
             {paginatedAppointments.map((a) => (
               <tr key={a.id}>
-                <td>{a.pet_id}</td>
                 <td>{petMap[a.pet_id] || "Unknown"}</td>
                 <td>{staffMap[a.staff_id] || a.staff_id}</td>
                 <td>{a.reason}</td>
