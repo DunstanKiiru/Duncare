@@ -17,7 +17,6 @@ function Billing() {
 
   useEffect(() => {
     const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5555";
-    // Fetch billings
     axios
       .get(`${API_BASE_URL}/api/billings`)
       .then((res) => {
@@ -28,7 +27,6 @@ function Billing() {
         setError("Failed to fetch billing data");
         setLoading(false);
       });
-    // Fetch pets
     axios
       .get(`${API_BASE_URL}/api/pets`)
       .then((res) => {
@@ -58,7 +56,6 @@ function Billing() {
     let aValue = a[sortField];
     let bValue = b[sortField];
 
-    // For status sorting, convert boolean to number for comparison
     if (sortField === "paid") {
       aValue = aValue ? 1 : 0;
       bValue = bValue ? 1 : 0;
@@ -74,7 +71,6 @@ function Billing() {
     if (filter === "unpaid" && b.paid) return false;
 
     const query = searchQuery.toLowerCase();
-    // Search in pet name as well
     const pet = pets.find((p) => p.id === b.pet_id);
     const petName = pet ? pet.name.toLowerCase() : "";
     return (
@@ -84,7 +80,6 @@ function Billing() {
     );
   });
 
-  // Pagination
   const totalPages = Math.ceil(filteredBills.length / itemsPerPage);
   const paginatedBills = filteredBills.slice(
     (currentPage - 1) * itemsPerPage,
@@ -109,7 +104,6 @@ function Billing() {
   if (loading) return <div>Loading bills...</div>;
   if (error) return <div>{error}</div>;
 
-  // Helper to get pet name by pet_id
   const getPetName = (pet_id) => {
     const pet = pets.find((p) => p.id === pet_id);
     return pet ? pet.name : pet_id;

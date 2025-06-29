@@ -28,10 +28,8 @@ function Owners() {
   if (loading) return <div>Loading owners...</div>;
   if (error) return <div>{error}</div>;
 
-  // Sort owners by id descending (newest first)
   const sortedOwners = [...owners].sort((a, b) => b.id - a.id);
 
-  // Filter owners based on search query (name, email, phone)
   const filteredOwners = sortedOwners.filter((o) => {
     const query = searchQuery.toLowerCase();
     return (
@@ -41,7 +39,7 @@ function Owners() {
     );
   });
 
-  // Pagination calculations
+  // Pagination
   const totalPages = Math.ceil(filteredOwners.length / itemsPerPage);
   const paginatedOwners = filteredOwners.slice(
     (currentPage - 1) * itemsPerPage,

@@ -35,10 +35,8 @@ function Staff() {
     return <div>{error}</div>;
   }
 
-  // Sort staff by id descending (newest first)
   const sortedStaff = [...staff].sort((a, b) => b.id - a.id);
 
-  // Filter staff based on search query (name, role, email, phone)
   const filteredStaff = sortedStaff.filter((s) => {
     const query = searchQuery.toLowerCase();
     return (
@@ -49,7 +47,7 @@ function Staff() {
     );
   });
 
-  // Pagination calculations
+  // Pagination
   const totalPages = Math.ceil(filteredStaff.length / itemsPerPage);
   const paginatedStaff = filteredStaff.slice(
     (currentPage - 1) * itemsPerPage,

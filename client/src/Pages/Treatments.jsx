@@ -46,7 +46,6 @@ function Treatments() {
     return acc;
   }, {});
 
-  // Sort treatments by date descending (newest first)
   const sortedTreatments = [...treatments].sort((a, b) => {
     if (a.date && b.date) {
       return new Date(b.date) - new Date(a.date);
@@ -54,7 +53,6 @@ function Treatments() {
     return b.id - a.id;
   });
 
-  // Filter treatments based on search query (pet name, staff name, description, date)
   const filteredTreatments = sortedTreatments.filter((t) => {
     const petNames = t.pets && t.pets.length > 0 ? t.pets.map(p => p.name).join(", ").toLowerCase() : "";
     const staffName = staffMap[t.staff_id] ? staffMap[t.staff_id].toLowerCase() : "";
@@ -69,7 +67,7 @@ function Treatments() {
     );
   });
 
-  // Pagination calculations
+  // Pagination
   const totalPages = Math.ceil(filteredTreatments.length / itemsPerPage);
   const paginatedTreatments = filteredTreatments.slice(
     (currentPage - 1) * itemsPerPage,

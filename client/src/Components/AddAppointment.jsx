@@ -67,7 +67,6 @@ function AddAppointment({ onAdd }) {
 
   return (
     <>
-      <h4 className="mb-3 text-center">Add Appointment</h4>
       <form className="mb-2" onSubmit={formik.handleSubmit}>
         <input
           name="reason"

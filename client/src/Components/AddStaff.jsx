@@ -36,7 +36,77 @@ function AddStaff({ onAddStaff }) {
       <form onSubmit={formik.handleSubmit}>
         <h4 className="mb-3">Add Staff</h4>
 
-        {/* ... inputs as before ... */}
+        <div className="mb-3">
+          <label htmlFor="name" className="form-label">
+            Name
+          </label>
+          <input
+            id="name"
+            name="name"
+            type="text"
+            className={`form-control${formik.touched.name && formik.errors.name ? " is-invalid" : ""}`}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.name}
+          />
+          {formik.touched.name && formik.errors.name ? (
+            <div className="invalid-feedback">{formik.errors.name}</div>
+          ) : null}
+        </div>
+
+        <div className="mb-3">
+          <label htmlFor="role" className="form-label">
+            Role
+          </label>
+          <input
+            id="role"
+            name="role"
+            type="text"
+            className={`form-control${formik.touched.role && formik.errors.role ? " is-invalid" : ""}`}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.role}
+          />
+          {formik.touched.role && formik.errors.role ? (
+            <div className="invalid-feedback">{formik.errors.role}</div>
+          ) : null}
+        </div>
+
+        <div className="mb-3">
+          <label htmlFor="email" className="form-label">
+            Email
+          </label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            className={`form-control${formik.touched.email && formik.errors.email ? " is-invalid" : ""}`}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.email}
+          />
+          {formik.touched.email && formik.errors.email ? (
+            <div className="invalid-feedback">{formik.errors.email}</div>
+          ) : null}
+        </div>
+
+        <div className="mb-3">
+          <label htmlFor="phone" className="form-label">
+            Phone
+          </label>
+          <input
+            id="phone"
+            name="phone"
+            type="text"
+            className={`form-control${formik.touched.phone && formik.errors.phone ? " is-invalid" : ""}`}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.phone}
+          />
+          {formik.touched.phone && formik.errors.phone ? (
+            <div className="invalid-feedback">{formik.errors.phone}</div>
+          ) : null}
+        </div>
 
         <button type="submit" className="btn btn-primary w-100">
           Add Staff Member

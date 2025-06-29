@@ -35,10 +35,8 @@ function Pets() {
     return <div>{error}</div>;
   }
 
-  // Sort pets by id descending (newest first)
   const sortedPets = [...pets].sort((a, b) => b.id - a.id);
 
-  // Filter pets based on search query (name, species)
   const filteredPets = sortedPets.filter((pet) => {
     const query = searchQuery.toLowerCase();
     return (
@@ -47,7 +45,7 @@ function Pets() {
     );
   });
 
-  // Pagination calculations
+  // Pagination
   const totalPages = Math.ceil(filteredPets.length / itemsPerPage);
   const paginatedPets = filteredPets.slice(
     (currentPage - 1) * itemsPerPage,

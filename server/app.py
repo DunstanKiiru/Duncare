@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from config import app, db, api  # Uses app from config.py
+from config import app, db, api
 from models import Staff, Owner, Pet, Appointment, Treatment, PetTreatment, Medication, Billing
 from flask import request, jsonify, render_template
 from flask_restful import Resource
@@ -252,7 +252,6 @@ api.add_resource(TreatmentList, '/api/treatments')
 api.add_resource(MedicationList, '/api/medications')
 api.add_resource(BillingList, '/api/billings')
 
-# --- Default Route ---
 @app.route('/')
 def index():
     return render_template("index.html")
