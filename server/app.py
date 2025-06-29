@@ -12,7 +12,7 @@ env = os.getenv("FLASK_ENV", "development")
 if env == "production":
     CORS(app, origins=["https://duncare.onrender.com"])
 else:
-    CORS(app)
+    CORS(app, origins=["http://localhost:5173", "https://duncare-backend.onrender.com"])
 # --- Serializers ---
 def serialize_staff(staff):
     return {

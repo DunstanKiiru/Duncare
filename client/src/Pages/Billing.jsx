@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import AddBillings from "../Components/AddBillings";
+import ConfirmDialog from "../Components/ConfirmDialog";
 
 function Billing() {
   const [bills, setBills] = useState([]);
@@ -14,6 +15,10 @@ function Billing() {
   const itemsPerPage = 10;
   const [sortField, setSortField] = useState("id");
   const [sortDirection, setSortDirection] = useState("desc");
+
+  // New state for confirm dialog
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [selectedBillId, setSelectedBillId] = useState(null);
 
   useEffect(() => {
     const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5555";
@@ -37,19 +42,33 @@ function Billing() {
       });
   }, []);
 
-  const markAsPaid = async (id) => {
-    const confirm = window.confirm("Mark this bill as paid?");
-    if (!confirm) return;
+  // Modified markAsPaid to open confirm dialog
+  const markAsPaid = (id) => {
+    setSelectedBillId(id);
+    setConfirmOpen(true);
+  };
+
+  // Confirm handler to mark bill as paid
+  const handleConfirm = async () => {
+    if (selectedBillId === null) return;
+    setConfirmOpen(false);
 
     try {
       const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5555";
-      const res = await axios.patch(`${API_BASE_URL}/api/billings/${id}`, { paid: true });
+      await axios.patch(`${API_BASE_URL}/api/billings/${selectedBillId}`, { paid: true });
       setBills((prev) =>
-        prev.map((b) => (b.id === id ? { ...b, paid: true } : b))
+        prev.map((b) => (b.id === selectedBillId ? { ...b, paid: true } : b))
       );
+      setSelectedBillId(null);
     } catch (err) {
       console.error("Failed to update billing status", err);
     }
+  };
+
+  // Cancel handler to close confirm dialog
+  const handleCancel = () => {
+    setConfirmOpen(false);
+    setSelectedBillId(null);
   };
 
   const sortedBills = [...bills].sort((a, b) => {
@@ -211,6 +230,13 @@ function Billing() {
           </ul>
         </nav>
       </div>
+
+      <ConfirmDialog
+        open={confirmOpen}
+        message="Mark this bill as paid?"
+        onConfirm={handleConfirm}
+        onCancel={handleCancel}
+      />
     </div>
   );
 }
