@@ -1,18 +1,21 @@
 #!/usr/bin/env python3
 import os
-from config import app, db, api
-from models import Staff, Owner, Pet, Appointment, Treatment, PetTreatment, Medication, Billing
+from datetime import datetime
 from flask import request, jsonify, render_template
 from flask_restful import Resource
-from datetime import datetime
 from flask_cors import CORS
+from config import app, db, api
+from models import Staff, Owner, Pet, Appointment, Treatment, PetTreatment, Medication, Billing
+from sqlalchemy.orm import joinedload
 
+# --- CORS ---
 env = os.getenv("FLASK_ENV", "development")
 
 if env == "production":
     CORS(app, origins=["https://duncare.onrender.com"])
 else:
     CORS(app, origins=["http://localhost:5173", "https://duncare-backend.onrender.com"])
+
 # --- Serializers ---
 def serialize_staff(staff):
     return {
@@ -91,6 +94,7 @@ def serialize_billing(b):
     }
 
 # --- API Resources ---
+
 class StaffList(Resource):
     def get(self):
         return [serialize_staff(s) for s in Staff.query.all()], 200
@@ -193,8 +197,6 @@ class AppointmentList(Resource):
         db.session.commit()
         return serialize_appointment(appt), 201
 
-from sqlalchemy.orm import joinedload
-
 class TreatmentList(Resource):
     def get(self):
         treatments = Treatment.query.options(joinedload(Treatment.pets)).all()
@@ -239,6 +241,7 @@ class BillingList(Resource):
         db.session.commit()
         return serialize_billing(bill), 201
 
+class BillingDetail(Resource):
     def patch(self, id):
         bill = Billing.query.get(id)
         if not bill:
@@ -249,6 +252,9 @@ class BillingList(Resource):
         db.session.commit()
         return serialize_billing(bill), 200
 
+    def options(self, id):
+        return '', 200
+
 # --- API Route Registration ---
 api.add_resource(StaffList, '/api/staff')
 api.add_resource(OwnerList, '/api/owners')
@@ -258,7 +264,9 @@ api.add_resource(AppointmentList, '/api/appointments')
 api.add_resource(TreatmentList, '/api/treatments')
 api.add_resource(MedicationList, '/api/medications')
 api.add_resource(BillingList, '/api/billings')
+api.add_resource(BillingDetail, '/api/billings/<int:id>')
 
+# --- Routes ---
 @app.route('/')
 def index():
     return render_template("index.html")
@@ -267,8 +275,3 @@ def index():
 def not_found(e):
     if request.path.startswith('/api/'):
         return jsonify({"error": "Not Found"}), 404
-    return render_template("index.html")
-
-# --- Run App ---
-if __name__ == '__main__':
-    app.run(port=5555, debug=True)

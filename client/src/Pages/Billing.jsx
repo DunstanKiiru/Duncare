@@ -16,7 +16,6 @@ function Billing() {
   const [sortField, setSortField] = useState("id");
   const [sortDirection, setSortDirection] = useState("desc");
 
-  // New state for confirm dialog
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [selectedBillId, setSelectedBillId] = useState(null);
 
@@ -42,13 +41,11 @@ function Billing() {
       });
   }, []);
 
-  // Modified markAsPaid to open confirm dialog
   const markAsPaid = (id) => {
     setSelectedBillId(id);
     setConfirmOpen(true);
   };
 
-  // Confirm handler to mark bill as paid
   const handleConfirm = async () => {
     if (selectedBillId === null) return;
     setConfirmOpen(false);
@@ -65,7 +62,6 @@ function Billing() {
     }
   };
 
-  // Cancel handler to close confirm dialog
   const handleCancel = () => {
     setConfirmOpen(false);
     setSelectedBillId(null);
