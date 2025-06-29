@@ -60,7 +60,8 @@ def serialize_treatment(treat):
         "date": treat.date.isoformat() if treat.date else None,
         "description": treat.description,
         "staff_id": treat.staff_id,
-        "medications": [serialize_medication(m) for m in treat.medications]
+        "medications": [serialize_medication(m) for m in treat.medications],
+        "pets": [{"id": p.id, "name": p.name} for p in treat.pets]
     }
 
 def serialize_medication(med):
