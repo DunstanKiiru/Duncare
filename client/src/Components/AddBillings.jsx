@@ -39,6 +39,11 @@ function AddBilling({ onAdd }) {
     },
   });
 
+  const findPetIdByName = (name) => {
+    const pet = pets.find((p) => p.name === name);
+    return pet ? pet.id : "";
+  };
+
   return (
     <div className="p-3 shadow-sm border rounded bg-light">
       <form onSubmit={formik.handleSubmit}>
@@ -53,8 +58,9 @@ function AddBilling({ onAdd }) {
             list="pets-list"
             value={formik.values.pet_name || ""}
             onChange={(e) => {
-              formik.setFieldValue("pet_name", e.target.value);
-              formik.setFieldValue("pet_id", "");
+              const petName = e.target.value;
+              formik.setFieldValue("pet_name", petName);
+              formik.setFieldValue("pet_id", findPetIdByName(petName));
             }}
             onBlur={formik.handleBlur}
           />
