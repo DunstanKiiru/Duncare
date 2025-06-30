@@ -1,7 +1,8 @@
+import { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import ConfirmDialog from "./ConfirmDialog";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:5555";
@@ -9,6 +10,8 @@ const API_BASE_URL =
 function AddPet({ onAddPet }) {
   const [owners, setOwners] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [pendingValues, setPendingValues] = useState(null);
 
   useEffect(() => {
     axios
@@ -32,16 +35,25 @@ function AddPet({ onAddPet }) {
       sex: Yup.string().required("Sex is required"),
       owner_id: Yup.string().required("Owner is required"),
     }),
-    onSubmit: async (values, { resetForm }) => {
+    onSubmit: (values) => {
       setErrorMessage("");
+      setPendingValues(values);
+      setConfirmOpen(true);
+    },
+  });
+
+  const handleConfirm = async () => {
+    setConfirmOpen(false);
+    if (pendingValues) {
       try {
         // Convert owner_id to integer before sending
-        const payload = { ...values, owner_id: parseInt(values.owner_id, 10) };
+        const payload = { ...pendingValues, owner_id: parseInt(pendingValues.owner_id, 10) };
         const res = await axios.post(`${API_BASE_URL}/api/pets`, payload);
         if (onAddPet) {
           onAddPet(res.data);
         }
-        resetForm();
+        formik.resetForm();
+        setPendingValues(null);
       } catch (err) {
         console.error("Failed to add pet:", err);
         if (err.response && err.response.data && err.response.data.error) {
@@ -50,8 +62,13 @@ function AddPet({ onAddPet }) {
           setErrorMessage("Error adding pet. Please try again.");
         }
       }
-    },
-  });
+    }
+  };
+
+  const handleCancel = () => {
+    setConfirmOpen(false);
+    setPendingValues(null);
+  };
 
   return (
     <div className="p-3 shadow-sm border rounded bg-light">
@@ -149,6 +166,13 @@ function AddPet({ onAddPet }) {
           Add Pet
         </button>
       </form>
+
+      <ConfirmDialog
+        open={confirmOpen}
+        message="Are you sure you want to add this pet?"
+        onConfirm={handleConfirm}
+        onCancel={handleCancel}
+      />
     </div>
   );
 }

@@ -2,12 +2,15 @@ import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
+import ConfirmDialog from "./ConfirmDialog";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:5555";
 
 function AddBilling({ onAdd }) {
   const [pets, setPets] = useState([]);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [pendingValues, setPendingValues] = useState(null);
 
   useEffect(() => {
     axios.get(`${API_BASE_URL}/api/pets`).then((res) => setPets(res.data));
@@ -27,21 +30,35 @@ function AddBilling({ onAdd }) {
       amount: Yup.number().required("Amount is required"),
       description: Yup.string().required("Description is required"),
     }),
-    onSubmit: async (values, { resetForm }) => {
-      try {
-        const res = await axios.post(`${API_BASE_URL}/api/billings`, values);
-        onAdd(res.data);
-        resetForm();
-      } catch (err) {
-        console.error("Failed to create billing:", err);
-        alert("Error: Could not create billing entry.");
-      }
+    onSubmit: (values) => {
+      setPendingValues(values);
+      setConfirmOpen(true);
     },
   });
 
   const findPetIdByName = (name) => {
     const pet = pets.find((p) => p.name === name);
     return pet ? pet.id : "";
+  };
+
+  const handleConfirm = async () => {
+    setConfirmOpen(false);
+    if (pendingValues) {
+      try {
+        const res = await axios.post(`${API_BASE_URL}/api/billings`, pendingValues);
+        onAdd(res.data);
+        formik.resetForm();
+        setPendingValues(null);
+      } catch (err) {
+        console.error("Failed to create billing:", err);
+        alert("Error: Could not create billing entry.");
+      }
+    }
+  };
+
+  const handleCancel = () => {
+    setConfirmOpen(false);
+    setPendingValues(null);
   };
 
   return (
@@ -135,6 +152,13 @@ function AddBilling({ onAdd }) {
           Add Billing
         </button>
       </form>
+
+      <ConfirmDialog
+        open={confirmOpen}
+        message="Are you sure you want to add this billing?"
+        onConfirm={handleConfirm}
+        onCancel={handleCancel}
+      />
     </div>
   );
 }

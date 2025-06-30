@@ -1,7 +1,8 @@
+import { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import ConfirmDialog from "./ConfirmDialog";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:5555";
@@ -9,6 +10,8 @@ const API_BASE_URL =
 function AddTreatment({ onAddTreatment }) {
   const [staff, setStaff] = useState([]);
   const [pets, setPets] = useState([]);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [pendingValues, setPendingValues] = useState(null);
 
   useEffect(() => {
     axios.get(`${API_BASE_URL}/api/staff`).then((res) => setStaff(res.data));
@@ -29,14 +32,9 @@ function AddTreatment({ onAddTreatment }) {
       staff_name: Yup.string().required("Required"),
       pet_name: Yup.string().required("Required"),
     }),
-    onSubmit: async (values, { resetForm }) => {
-      try {
-        const res = await axios.post(`${API_BASE_URL}/api/treatments`, values);
-        onAddTreatment(res.data);
-        resetForm();
-      } catch (err) {
-        console.error("Error creating treatment", err);
-      }
+    onSubmit: (values) => {
+      setPendingValues(values);
+      setConfirmOpen(true);
     },
   });
 
@@ -48,6 +46,25 @@ function AddTreatment({ onAddTreatment }) {
   const findStaffIdByName = (name) => {
     const staffMember = staff.find((s) => s.name === name);
     return staffMember ? staffMember.id : "";
+  };
+
+  const handleConfirm = async () => {
+    setConfirmOpen(false);
+    if (pendingValues) {
+      try {
+        const res = await axios.post(`${API_BASE_URL}/api/treatments`, pendingValues);
+        onAddTreatment(res.data);
+        formik.resetForm();
+        setPendingValues(null);
+      } catch (err) {
+        console.error("Error creating treatment", err);
+      }
+    }
+  };
+
+  const handleCancel = () => {
+    setConfirmOpen(false);
+    setPendingValues(null);
   };
 
   return (
@@ -116,6 +133,13 @@ function AddTreatment({ onAddTreatment }) {
           </button>
         </div>
       </form>
+
+      <ConfirmDialog
+        open={confirmOpen}
+        message="Are you sure you want to add this treatment?"
+        onConfirm={handleConfirm}
+        onCancel={handleCancel}
+      />
     </>
   );
 }

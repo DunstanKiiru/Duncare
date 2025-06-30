@@ -1,11 +1,16 @@
+import { useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
+import ConfirmDialog from "./ConfirmDialog";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:5555";
 
 function AddOwner({ onAddOwner }) {
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [pendingValues, setPendingValues] = useState(null);
+
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -19,17 +24,31 @@ function AddOwner({ onAddOwner }) {
         .required("Email is required"),
       phone: Yup.string().required("Phone number is required"),
     }),
-    onSubmit: async (values, { resetForm }) => {
+    onSubmit: (values) => {
+      setPendingValues(values);
+      setConfirmOpen(true);
+    },
+  });
+
+  const handleConfirm = async () => {
+    setConfirmOpen(false);
+    if (pendingValues) {
       try {
-        const response = await axios.post(`${API_BASE_URL}/api/owners`, values);
+        const response = await axios.post(`${API_BASE_URL}/api/owners`, pendingValues);
         onAddOwner(response.data);
-        resetForm();
+        formik.resetForm();
+        setPendingValues(null);
       } catch (error) {
         console.error("Error adding owner:", error);
         alert("Failed to add owner. Please try again.");
       }
-    },
-  });
+    }
+  };
+
+  const handleCancel = () => {
+    setConfirmOpen(false);
+    setPendingValues(null);
+  };
 
   return (
     <div className="p-3 shadow-sm border rounded bg-light">
@@ -86,6 +105,13 @@ function AddOwner({ onAddOwner }) {
           Add Owner
         </button>
       </form>
+
+      <ConfirmDialog
+        open={confirmOpen}
+        message="Are you sure you want to add this owner?"
+        onConfirm={handleConfirm}
+        onCancel={handleCancel}
+      />
     </div>
   );
 }
