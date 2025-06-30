@@ -129,25 +129,29 @@ class PetList(Resource):
 
     def post(self):
         data = request.get_json()
-        pet = Pet(
-            name=data["name"],
-            species=data["species"],
-            breed=data["breed"],
-            sex=data["sex"],
-            owner_id=data["owner_id"]
-        )
-        db.session.add(pet)
-        db.session.flush()
-        for t in data.get("treatments", []):
-            pt = PetTreatment(
-                pet=pet,
-                treatment_id=t["treatment_id"],
-                treatment_date=datetime.fromisoformat(t["treatment_date"]) if t.get("treatment_date") else None,
-                notes=t.get("notes")
+        try:
+            pet = Pet(
+                name=data["name"],
+                species=data["species"],
+                breed=data["breed"],
+                sex=data["sex"],
+                owner_id=data["owner_id"]
             )
-            db.session.add(pt)
-        db.session.commit()
-        return serialize_pet(pet), 201
+            db.session.add(pet)
+            db.session.flush()
+            for t in data.get("treatments", []):
+                pt = PetTreatment(
+                    pet=pet,
+                    treatment_id=t["treatment_id"],
+                    treatment_date=datetime.fromisoformat(t["treatment_date"]) if t.get("treatment_date") else None,
+                    notes=t.get("notes")
+                )
+                db.session.add(pt)
+            db.session.commit()
+            return serialize_pet(pet), 201
+        except Exception as e:
+            db.session.rollback()
+            return {"error": "Failed to add pet", "message": str(e)}, 500
 
 class PetDetail(Resource):
     def get(self, id):
