@@ -124,26 +124,30 @@ class PetList(Resource):
         return [serialize_pet(p) for p in query.all()], 200
 
     def post(self):
-        data = request.get_json()
-        pet = Pet(
-            name=data["name"],
-            species=data["species"],
-            breed=data["breed"],
-            sex=data["sex"],
-            owner_id=data["owner_id"]
-        )
-        db.session.add(pet)
-        db.session.flush()
-        for t in data.get("treatments", []):
-            pt = PetTreatment(
-                pet=pet,
-                treatment_id=t["treatment_id"],
-                treatment_date=datetime.fromisoformat(t["treatment_date"]) if t.get("treatment_date") else None,
-                notes=t.get("notes")
+        try:
+            data = request.get_json()
+            pet = Pet(
+                name=data["name"],
+                species=data["species"],
+                breed=data["breed"],
+                sex=data["sex"],
+                owner_id=int(data["owner_id"]) if data.get("owner_id") else None
             )
-            db.session.add(pt)
-        db.session.commit()
-        return serialize_pet(pet), 201
+            db.session.add(pet)
+            db.session.flush()
+            for t in data.get("treatments", []):
+                pt = PetTreatment(
+                    pet=pet,
+                    treatment_id=t["treatment_id"],
+                    treatment_date=datetime.fromisoformat(t["treatment_date"]) if t.get("treatment_date") else None,
+                    notes=t.get("notes")
+                )
+                db.session.add(pt)
+            db.session.commit()
+            return serialize_pet(pet), 201
+        except Exception as e:
+            db.session.rollback()
+            return {"error": str(e)}, 400
 
 class PetDetail(Resource):
     def get(self, id):

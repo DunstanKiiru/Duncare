@@ -8,6 +8,7 @@ const API_BASE_URL =
 
 function AddPet({ onAddPet }) {
   const [owners, setOwners] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     axios
@@ -32,13 +33,22 @@ function AddPet({ onAddPet }) {
       owner_id: Yup.string().required("Owner is required"),
     }),
     onSubmit: async (values, { resetForm }) => {
+      setErrorMessage("");
       try {
-        const res = await axios.post(`${API_BASE_URL}/api/pets`, values);
-        onAddPet(res.data);
+        // Convert owner_id to integer before sending
+        const payload = { ...values, owner_id: parseInt(values.owner_id, 10) };
+        const res = await axios.post(`${API_BASE_URL}/api/pets`, payload);
+        if (onAddPet) {
+          onAddPet(res.data);
+        }
         resetForm();
       } catch (err) {
         console.error("Failed to add pet:", err);
-        alert("Error adding pet. Please try again.");
+        if (err.response && err.response.data && err.response.data.error) {
+          setErrorMessage(err.response.data.error);
+        } else {
+          setErrorMessage("Error adding pet. Please try again.");
+        }
       }
     },
   });
@@ -88,6 +98,9 @@ function AddPet({ onAddPet }) {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
+          {formik.touched.breed && formik.errors.breed && (
+            <div className="text-danger">{formik.errors.breed}</div>
+          )}
         </div>
 
         <div className="mb-3">
@@ -125,6 +138,12 @@ function AddPet({ onAddPet }) {
             <div className="text-danger">{formik.errors.owner_id}</div>
           )}
         </div>
+
+        {errorMessage && (
+          <div className="alert alert-danger" role="alert">
+            {errorMessage}
+          </div>
+        )}
 
         <button type="submit" className="btn btn-primary w-100">
           Add Pet
