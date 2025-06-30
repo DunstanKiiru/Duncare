@@ -3,6 +3,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import ConfirmDialog from "./ConfirmDialog";
+import SuccessDialog from "./SuccessDialog";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:5555";
@@ -111,6 +112,11 @@ function AddOwner({ onAddOwner }) {
         message="Are you sure you want to add this owner?"
         onConfirm={handleConfirm}
         onCancel={handleCancel}
+      />
+      <SuccessDialog
+        open={successOpen}
+        message="Owner added successfully."
+        onClose={handleSuccessClose}
       />
     </div>
   );

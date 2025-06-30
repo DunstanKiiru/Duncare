@@ -140,6 +140,11 @@ function AddTreatment({ onAddTreatment }) {
         onConfirm={handleConfirm}
         onCancel={handleCancel}
       />
+      <SuccessDialog
+        open={successOpen}
+        message="Treatment added successfully."
+        onClose={handleSuccessClose}
+      />
     </>
   );
 }

@@ -3,6 +3,7 @@ import * as Yup from "yup";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import ConfirmDialog from "./ConfirmDialog";
+import SuccessDialog from "./SuccessDialog";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:5555";
@@ -117,7 +118,10 @@ function AddAppointment({ onAdd }) {
           }}
         />
         {showPetDropdown && filteredPets.length > 0 && (
-          <ul className="list-group mb-2" style={{ maxHeight: "150px", overflowY: "auto" }}>
+          <ul
+            className="list-group mb-2"
+            style={{ maxHeight: "150px", overflowY: "auto" }}
+          >
             {filteredPets.map((p) => (
               <li
                 key={p.id}
@@ -163,7 +167,10 @@ function AddAppointment({ onAdd }) {
           }}
         />
         {showStaffDropdown && filteredStaff.length > 0 && (
-          <ul className="list-group mb-2" style={{ maxHeight: "150px", overflowY: "auto" }}>
+          <ul
+            className="list-group mb-2"
+            style={{ maxHeight: "150px", overflowY: "auto" }}
+          >
             {filteredStaff.map((s) => (
               <li
                 key={s.id}
@@ -196,6 +203,11 @@ function AddAppointment({ onAdd }) {
         message="Are you sure you want to add this appointment?"
         onConfirm={handleConfirm}
         onCancel={handleCancel}
+      />
+      <SuccessDialog
+        open={successOpen}
+        message="Appointment added successfully."
+        onClose={handleSuccessClose}
       />
     </>
   );

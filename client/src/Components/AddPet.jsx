@@ -173,6 +173,11 @@ function AddPet({ onAddPet }) {
         onConfirm={handleConfirm}
         onCancel={handleCancel}
       />
+      <SuccessDialog
+        open={successOpen}
+        message="Pet added successfully."
+        onClose={handleSuccessClose}
+      />
     </div>
   );
 }
