@@ -127,29 +127,33 @@ class PetList(Resource):
         return [serialize_pet(p) for p in query.all()], 200
 
     def post(self):
-        data = request.get_json()
-        pet = Pet(
-            name=data["name"],
-            species=data["species"],
-            breed=data["breed"],
-            sex=data["sex"],
-            color=data["color"],
-            dob=datetime.fromisoformat(data["dob"]) if data.get("dob") else None,
-            medical_notes=data["medical_notes"],
-            owner_id=data["owner_id"]
-        )
-        db.session.add(pet)
-        db.session.flush()
-        for t in data.get("treatments", []):
-            pt = PetTreatment(
-                pet=pet,
-                treatment_id=t["treatment_id"],
-                treatment_date=datetime.fromisoformat(t["treatment_date"]) if t.get("treatment_date") else None,
-                notes=t.get("notes")
+        try:
+            data = request.get_json()
+            pet = Pet(
+                name=data["name"],
+                species=data["species"],
+                breed=data["breed"],
+                sex=data["sex"],
+                color=data.get("color"),
+                dob=datetime.fromisoformat(data["dob"]) if data.get("dob") else None,
+                medical_notes=data.get("medical_notes"),
+                owner_id=data["owner_id"]
             )
-            db.session.add(pt)
-        db.session.commit()
-        return serialize_pet(pet), 201
+            db.session.add(pet)
+            db.session.flush()
+            for t in data.get("treatments", []):
+                pt = PetTreatment(
+                    pet=pet,
+                    treatment_id=t["treatment_id"],
+                    treatment_date=datetime.fromisoformat(t["treatment_date"]) if t.get("treatment_date") else None,
+                    notes=t.get("notes")
+                )
+                db.session.add(pt)
+            db.session.commit()
+            return serialize_pet(pet), 201
+        except Exception as e:
+            db.session.rollback()
+            return {"error": str(e)}, 400
 
 class PetDetail(Resource):
     def get(self, id):
@@ -275,3 +279,4 @@ def index():
 def not_found(e):
     if request.path.startswith('/api/'):
         return jsonify({"error": "Not Found"}), 404
+    return render_template("index.html"), 404

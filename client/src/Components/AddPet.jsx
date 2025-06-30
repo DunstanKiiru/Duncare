@@ -32,6 +32,13 @@ function AddPet({ onAddPet }) {
       sex: Yup.string().required("Sex is required"),
       owner_name: Yup.string().required("Owner is required"),
     }),
+    validate: (values) => {
+      const errors = {};
+      if (!values.owner_id) {
+        errors.owner_name = "Please select a valid owner from the list";
+      }
+      return errors;
+    },
     onSubmit: async (values, { resetForm }) => {
       try {
         const res = await axios.post(`${API_BASE_URL}/api/pets`, values);
