@@ -55,9 +55,6 @@ const Home = () => {
           <Link to="/treatments" style={buttonStyle("#17a2b8", "#fff")}>
             💊 Treatments
           </Link>
-          <Link to="/medications" style={buttonStyle("#6610f2", "#fff")}>
-            🧪 Medications
-          </Link>
           <Link to="/billing" style={buttonStyle("#dc3545", "#fff")}>
             💳 Billing
           </Link>
