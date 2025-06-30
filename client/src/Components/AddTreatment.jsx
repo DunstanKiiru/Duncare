@@ -28,9 +28,10 @@ function AddTreatment({ onAddTreatment }) {
       pet_name: "",
     },
     validationSchema: Yup.object({
-      description: Yup.string().required("Required"),
-      staff_name: Yup.string().required("Required"),
-      pet_name: Yup.string().required("Required"),
+      date: Yup.date().required("Date is required"),
+      description: Yup.string().required("Description is required"),
+      staff_name: Yup.string().required("Staff is required"),
+      pet_name: Yup.string().required("Pet is required"),
     }),
     onSubmit: (values) => {
       setPendingValues(values);
@@ -52,7 +53,10 @@ function AddTreatment({ onAddTreatment }) {
     setConfirmOpen(false);
     if (pendingValues) {
       try {
-        const res = await axios.post(`${API_BASE_URL}/api/treatments`, pendingValues);
+        const res = await axios.post(
+          `${API_BASE_URL}/api/treatments`,
+          pendingValues
+        );
         onAddTreatment(res.data);
         formik.resetForm();
         setPendingValues(null);
@@ -69,8 +73,20 @@ function AddTreatment({ onAddTreatment }) {
 
   return (
     <>
-      <h2 className="mb-3 text-center"></h2>
+      <h2 className="mb-3 text-center">Add Treatment</h2>
       <form onSubmit={formik.handleSubmit}>
+        <input
+          type="date"
+          name="date"
+          className="form-control mb-2"
+          onChange={formik.handleChange}
+          value={formik.values.date}
+          onBlur={formik.handleBlur}
+        />
+        {formik.touched.date && formik.errors.date && (
+          <small className="text-danger">{formik.errors.date}</small>
+        )}
+
         <input
           name="description"
           placeholder="Description"
@@ -140,7 +156,6 @@ function AddTreatment({ onAddTreatment }) {
         onConfirm={handleConfirm}
         onCancel={handleCancel}
       />
-
     </>
   );
 }
