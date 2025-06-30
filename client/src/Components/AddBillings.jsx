@@ -3,6 +3,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import ConfirmDialog from "./ConfirmDialog";
+import SuccessDialog from "./SuccessDialog";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:5555";
@@ -10,6 +11,7 @@ const API_BASE_URL =
 function AddBilling({ onAdd }) {
   const [pets, setPets] = useState([]);
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [successOpen, setSuccessOpen] = useState(false);
   const [pendingValues, setPendingValues] = useState(null);
 
   useEffect(() => {
@@ -49,6 +51,7 @@ function AddBilling({ onAdd }) {
         onAdd(res.data);
         formik.resetForm();
         setPendingValues(null);
+        setSuccessOpen(true);
       } catch (err) {
         console.error("Failed to create billing:", err);
         alert("Error: Could not create billing entry.");
@@ -59,6 +62,10 @@ function AddBilling({ onAdd }) {
   const handleCancel = () => {
     setConfirmOpen(false);
     setPendingValues(null);
+  };
+
+  const handleSuccessClose = () => {
+    setSuccessOpen(false);
   };
 
   return (
@@ -158,6 +165,12 @@ function AddBilling({ onAdd }) {
         message="Are you sure you want to add this billing?"
         onConfirm={handleConfirm}
         onCancel={handleCancel}
+      />
+
+      <SuccessDialog
+        open={successOpen}
+        message="Billing added successfully."
+        onClose={handleSuccessClose}
       />
     </div>
   );
