@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import AddBillings from "../Components/AddBillings";
 import ConfirmDialog from "../Components/ConfirmDialog";
-import SuccessDialog from "../Components/SuccessDialog";
 
 function Billing() {
   const [bills, setBills] = useState([]);
@@ -294,11 +293,6 @@ function Billing() {
         message="Are you sure you want to delete this bill?"
         onConfirm={handleDeleteConfirm}
         onCancel={handleDeleteCancel}
-      />
-      <SuccessDialog
-        open={successOpen}
-        message="Billing deleted successfully."
-        onClose={handleSuccessClose}
       />
     </div>
   );
