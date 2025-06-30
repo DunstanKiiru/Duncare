@@ -23,22 +23,14 @@ function AddPet({ onAddPet }) {
       breed: "",
       sex: "",
       owner_id: "",
-      owner_name: "",
     },
     validationSchema: Yup.object({
       name: Yup.string().required("Name is required"),
       species: Yup.string().required("Species is required"),
       breed: Yup.string().required("Breed is required"),
       sex: Yup.string().required("Sex is required"),
-      owner_name: Yup.string().required("Owner is required"),
+      owner_id: Yup.string().required("Owner is required"),
     }),
-    validate: (values) => {
-      const errors = {};
-      if (!values.owner_id) {
-        errors.owner_name = "Please select a valid owner from the list";
-      }
-      return errors;
-    },
     onSubmit: async (values, { resetForm }) => {
       try {
         const res = await axios.post(`${API_BASE_URL}/api/pets`, values);
@@ -115,31 +107,22 @@ function AddPet({ onAddPet }) {
 
         <div className="mb-3">
           <label className="form-label">Owner</label>
-          <input
-            name="owner_name"
+          <select
+            name="owner_id"
             className="form-control"
-            placeholder="Owner name"
-            list="owners-list"
-            value={formik.values.owner_name || ""}
-            onChange={(e) => {
-              const selectedOwnerName = e.target.value;
-              formik.setFieldValue("owner_name", selectedOwnerName);
-              const selectedOwner = owners.find(owner => owner.name === selectedOwnerName);
-              if (selectedOwner) {
-                formik.setFieldValue("owner_id", selectedOwner.id);
-              } else {
-                formik.setFieldValue("owner_id", "");
-              }
-            }}
+            value={formik.values.owner_id}
+            onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-          />
-          <datalist id="owners-list">
+          >
+            <option value="">-- Select Owner --</option>
             {owners.map((owner) => (
-              <option key={owner.id} value={owner.name} />
+              <option key={owner.id} value={owner.id}>
+                {owner.name}
+              </option>
             ))}
-          </datalist>
-          {formik.touched.owner_name && formik.errors.owner_name && (
-            <div className="text-danger">{formik.errors.owner_name}</div>
+          </select>
+          {formik.touched.owner_id && formik.errors.owner_id && (
+            <div className="text-danger">{formik.errors.owner_id}</div>
           )}
         </div>
 
