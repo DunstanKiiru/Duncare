@@ -134,7 +134,7 @@ class PetList(Resource):
             species=data["species"],
             breed=data["breed"],
             sex=data["sex"],
-            owner_name=data["owner_name"]
+            owner_id=data["owner_id"]
         )
         db.session.add(pet)
         db.session.flush()
@@ -157,7 +157,7 @@ class PetDetail(Resource):
     def patch(self, id):
         pet = Pet.query.get_or_404(id)
         data = request.get_json()
-        for field in ["name", "species", "breed", "sex", "color", "owner_name"]:
+        for field in ["name", "species", "breed", "sex", "color", "owner_id"]:
             setattr(pet, field, data.get(field, getattr(pet, field)))
         pet.pet_treatments.clear()
         for t in data.get("treatments", []):
