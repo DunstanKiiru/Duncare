@@ -200,14 +200,26 @@ class TreatmentList(Resource):
 
     def post(self):
         data = request.get_json()
-        treat = Treatment(
-            date=datetime.fromisoformat(data["date"]) if data.get("date") else None,
-            description=data.get("description"),
-            staff_id=data.get("staff_id")
-        )
-        db.session.add(treat)
-        db.session.commit()
-        return serialize_treatment(treat), 201
+        try:
+            staff_id = data.get("staff_id")
+            if not staff_id:
+                return {"error": "staff_id is required"}, 400
+            # Check if staff exists
+            staff = Staff.query.get(staff_id)
+            if not staff:
+                return {"error": f"Staff with id {staff_id} does not exist"}, 400
+
+            treat = Treatment(
+                date=datetime.fromisoformat(data["date"]) if data.get("date") else None,
+                description=data.get("description"),
+                staff_id=staff_id
+            )
+            db.session.add(treat)
+            db.session.commit()
+            return serialize_treatment(treat), 201
+        except Exception as e:
+            db.session.rollback()
+            return {"error": "Failed to create treatment", "message": str(e)}, 500
 
 class MedicationList(Resource):
     def get(self):
