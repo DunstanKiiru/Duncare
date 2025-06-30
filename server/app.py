@@ -290,19 +290,7 @@ class BillingDetail(Resource):
             db.session.rollback()
             return {"error": str(e)}, 400
 
-class BillingDetail(Resource):
     def delete(self, id):
-        bill = Billing.query.get(id)
-        if not bill:
-            return {"error": "Not found"}, 404
-        try:
-            db.session.delete(bill)
-            db.session.commit()
-            return {"message": "Billing record deleted"}, 200
-        except Exception as e:
-            db.session.rollback()
-            return {"error": str(e)}, 400
-
         bill = Billing.query.get(id)
         if not bill:
             return {"error": "Not found"}, 404
@@ -328,7 +316,6 @@ api.add_resource(MedicationList, '/api/medications')
 api.add_resource(BillingList, '/api/billings')
 api.add_resource(BillingDetail, '/api/billings/<int:id>')
 
-# --- Home and Error Routes ---
 @app.route('/')
 def index():
     return render_template("index.html")
