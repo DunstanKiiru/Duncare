@@ -198,7 +198,12 @@ function Billing() {
               <th>Pet Name</th>
               <th>Amount</th>
               <th style={{ cursor: "pointer" }} onClick={toggleSortByStatus}>
-                Status {sortField === "paid" ? (sortDirection === "asc" ? "▲" : "▼") : ""}
+                Status{" "}
+                {sortField === "paid"
+                  ? sortDirection === "asc"
+                    ? "▲"
+                    : "▼"
+                  : ""}
               </th>
               <th>Actions</th>
             </tr>
@@ -216,16 +221,22 @@ function Billing() {
                   )}
                 </td>
                 <td>
-          {!b.paid && (
-            <button className="btn btn-primary btn-sm me-2" onClick={() => markAsPaid(b.id)}>
-              Mark as Paid
-            </button>
-          )}
-          <button className="btn btn-danger btn-sm" onClick={() => handleDeleteClick(b.id)}>
-            Delete
-          </button>
-        </td>
-      </tr>
+                  {!b.paid && (
+                    <button
+                      className="btn btn-primary btn-sm me-2"
+                      onClick={() => markAsPaid(b.id)}
+                    >
+                      Mark as Paid
+                    </button>
+                  )}
+                  <button
+                    className="btn btn-danger btn-sm"
+                    onClick={() => handleDeleteClick(b.id)}
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
             ))}
           </tbody>
         </table>
@@ -233,22 +244,37 @@ function Billing() {
         <nav aria-label="Billing pagination">
           <ul className="pagination justify-content-center">
             <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
-              <button className="page-link" onClick={() => handlePageChange(currentPage - 1)}>
+              <button
+                className="page-link"
+                onClick={() => handlePageChange(currentPage - 1)}
+              >
                 Previous
               </button>
             </li>
             {[...Array(totalPages)].map((_, idx) => (
               <li
                 key={idx + 1}
-                className={`page-item ${currentPage === idx + 1 ? "active" : ""}`}
+                className={`page-item ${
+                  currentPage === idx + 1 ? "active" : ""
+                }`}
               >
-                <button className="page-link" onClick={() => handlePageChange(idx + 1)}>
+                <button
+                  className="page-link"
+                  onClick={() => handlePageChange(idx + 1)}
+                >
                   {idx + 1}
                 </button>
               </li>
             ))}
-            <li className={`page-item ${currentPage === totalPages ? "disabled" : ""}`}>
-              <button className="page-link" onClick={() => handlePageChange(currentPage + 1)}>
+            <li
+              className={`page-item ${
+                currentPage === totalPages ? "disabled" : ""
+              }`}
+            >
+              <button
+                className="page-link"
+                onClick={() => handlePageChange(currentPage + 1)}
+              >
                 Next
               </button>
             </li>
@@ -261,6 +287,12 @@ function Billing() {
         message="Mark this bill as paid?"
         onConfirm={handleConfirm}
         onCancel={handleCancel}
+      />
+      <ConfirmDialog
+        open={deleteConfirmOpen}
+        message="Are you sure you want to delete this bill?"
+        onConfirm={handleDeleteConfirm}
+        onCancel={handleDeleteCancel}
       />
     </div>
   );
