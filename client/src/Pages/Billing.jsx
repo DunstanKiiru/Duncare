@@ -294,6 +294,11 @@ function Billing() {
         onConfirm={handleDeleteConfirm}
         onCancel={handleDeleteCancel}
       />
+      <SuccessDialog
+        open={successOpen}
+        message="Billing deleted successfully."
+        onClose={handleSuccessClose}
+      />
     </div>
   );
 }
