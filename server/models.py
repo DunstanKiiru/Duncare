@@ -45,7 +45,6 @@ class Pet(db.Model):
 
     appointments = db.relationship("Appointment", back_populates="pet", cascade="all, delete")
 
-    # Many-to-many relationship with Treatment via association table with extra fields
     pet_treatments = db.relationship("PetTreatment", back_populates="pet", cascade="all, delete-orphan")
     treatments = db.relationship("Treatment", secondary="pet_treatments", back_populates="pets")
 

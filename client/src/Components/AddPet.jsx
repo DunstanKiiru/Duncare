@@ -115,9 +115,14 @@ function AddPet({ onAddPet }) {
             list="owners-list"
             value={formik.values.owner_name || ""}
             onChange={(e) => {
-              formik.setFieldValue("owner_name", e.target.value);
-              // Optionally clear owner_id if name changes
-              formik.setFieldValue("owner_id", "");
+              const selectedOwnerName = e.target.value;
+              formik.setFieldValue("owner_name", selectedOwnerName);
+              const selectedOwner = owners.find(owner => owner.name === selectedOwnerName);
+              if (selectedOwner) {
+                formik.setFieldValue("owner_id", selectedOwner.id);
+              } else {
+                formik.setFieldValue("owner_id", "");
+              }
             }}
             onBlur={formik.handleBlur}
           />
