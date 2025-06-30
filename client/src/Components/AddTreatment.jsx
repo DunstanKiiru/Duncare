@@ -40,6 +40,16 @@ function AddTreatment({ onAddTreatment }) {
     },
   });
 
+  const findPetIdByName = (name) => {
+    const pet = pets.find((p) => p.name === name);
+    return pet ? pet.id : "";
+  };
+
+  const findStaffIdByName = (name) => {
+    const staffMember = staff.find((s) => s.name === name);
+    return staffMember ? staffMember.id : "";
+  };
+
   return (
     <>
       <h2 className="mb-3 text-center"></h2>
@@ -63,8 +73,9 @@ function AddTreatment({ onAddTreatment }) {
           list="pets-list"
           value={formik.values.pet_name || ""}
           onChange={(e) => {
-            formik.setFieldValue("pet_name", e.target.value);
-            formik.setFieldValue("pet_id", "");
+            const petName = e.target.value;
+            formik.setFieldValue("pet_name", petName);
+            formik.setFieldValue("pet_id", findPetIdByName(petName));
           }}
           onBlur={formik.handleBlur}
         />
@@ -84,8 +95,9 @@ function AddTreatment({ onAddTreatment }) {
           list="staff-list"
           value={formik.values.staff_name || ""}
           onChange={(e) => {
-            formik.setFieldValue("staff_name", e.target.value);
-            formik.setFieldValue("staff_id", "");
+            const staffName = e.target.value;
+            formik.setFieldValue("staff_name", staffName);
+            formik.setFieldValue("staff_id", findStaffIdByName(staffName));
           }}
           onBlur={formik.handleBlur}
         />

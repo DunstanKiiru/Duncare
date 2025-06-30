@@ -222,6 +222,18 @@ class TreatmentList(Resource):
                 staff_id=data.get("staff_id")
             )
             db.session.add(treat)
+            db.session.flush()  # flush to get treat.id
+
+            pet_id = data.get("pet_id")
+            if pet_id:
+                from models import PetTreatment
+                pet_treatment = PetTreatment(
+                    pet_id=pet_id,
+                    treatment_id=treat.id,
+                    treatment_date=datetime.fromisoformat(date_str) if date_str else None
+                )
+                db.session.add(pet_treatment)
+
             db.session.commit()
             return serialize_treatment(treat), 201
         except Exception as e:
