@@ -142,7 +142,7 @@ function AddTreatment({ onAddTreatment }) {
       />
       <SuccessDialog
         open={successOpen}
-        message="Treatment added successfully."
+        message="Billing added successfully."
         onClose={handleSuccessClose}
       />
     </>
