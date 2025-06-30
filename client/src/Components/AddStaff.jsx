@@ -3,7 +3,6 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import ConfirmDialog from "./ConfirmDialog";
-import SuccessDialog from "./SuccessDialog";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:5555";
@@ -144,12 +143,6 @@ function AddStaff({ onAddStaff }) {
         message="Are you sure you want to add this staff member?"
         onConfirm={handleConfirm}
         onCancel={handleCancel}
-      />
-
-      <SuccessDialog
-        open={successOpen}
-        message="Staff member added successfully."
-        onClose={handleSuccessClose}
       />
     </div>
   );

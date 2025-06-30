@@ -3,7 +3,6 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import ConfirmDialog from "./ConfirmDialog";
-import SuccessDialog from "./SuccessDialog";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:5555";
@@ -141,11 +140,7 @@ function AddTreatment({ onAddTreatment }) {
         onConfirm={handleConfirm}
         onCancel={handleCancel}
       />
-      <SuccessDialog
-        open={successOpen}
-        message="Billing added successfully."
-        onClose={handleSuccessClose}
-      />
+
     </>
   );
 }
