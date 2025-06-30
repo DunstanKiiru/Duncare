@@ -157,14 +157,3 @@ function AddStaff({ onAddStaff }) {
 
 export default AddStaff;
 
-      <ConfirmDialog
-        open={confirmOpen}
-        message="Are you sure you want to add this staff member?"
-        onConfirm={handleConfirm}
-        onCancel={handleCancel}
-      />
-    </div>
-  );
-}
-
-export default AddStaff;

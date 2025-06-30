@@ -13,6 +13,9 @@ function Treatments() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [selectedTreatmentId, setSelectedTreatmentId] = useState(null);
+
   useEffect(() => {
     const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5555";
 

@@ -18,6 +18,8 @@ function Billing() {
 
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [selectedBillId, setSelectedBillId] = useState(null);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [selectedBillIdToDelete, setSelectedBillIdToDelete] = useState(null);
 
   useEffect(() => {
     const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5555";
@@ -65,6 +67,30 @@ function Billing() {
   const handleCancel = () => {
     setConfirmOpen(false);
     setSelectedBillId(null);
+  };
+
+  const handleDeleteClick = (id) => {
+    setSelectedBillIdToDelete(id);
+    setDeleteConfirmOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (selectedBillIdToDelete === null) return;
+    setDeleteConfirmOpen(false);
+
+    try {
+      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5555";
+      await axios.delete(`${API_BASE_URL}/api/billings/${selectedBillIdToDelete}`);
+      setBills((prev) => prev.filter((b) => b.id !== selectedBillIdToDelete));
+      setSelectedBillIdToDelete(null);
+    } catch (err) {
+      console.error("Failed to delete billing", err);
+    }
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteConfirmOpen(false);
+    setSelectedBillIdToDelete(null);
   };
 
   const sortedBills = [...bills].sort((a, b) => {
@@ -190,13 +216,16 @@ function Billing() {
                   )}
                 </td>
                 <td>
-                  {!b.paid && (
-                    <button className="btn btn-primary btn-sm" onClick={() => markAsPaid(b.id)}>
-                      Mark as Paid
-                    </button>
-                  )}
-                </td>
-              </tr>
+          {!b.paid && (
+            <button className="btn btn-primary btn-sm me-2" onClick={() => markAsPaid(b.id)}>
+              Mark as Paid
+            </button>
+          )}
+          <button className="btn btn-danger btn-sm" onClick={() => handleDeleteClick(b.id)}>
+            Delete
+          </button>
+        </td>
+      </tr>
             ))}
           </tbody>
         </table>
