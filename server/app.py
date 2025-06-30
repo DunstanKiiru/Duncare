@@ -134,10 +134,7 @@ class PetList(Resource):
             species=data["species"],
             breed=data["breed"],
             sex=data["sex"],
-            color=data["color"],
-            dob=datetime.fromisoformat(data["dob"]) if data.get("dob") else None,
-            medical_notes=data["medical_notes"],
-            owner_id=data["owner_id"]
+            owner_name=data["owner_name"]
         )
         db.session.add(pet)
         db.session.flush()
@@ -160,10 +157,8 @@ class PetDetail(Resource):
     def patch(self, id):
         pet = Pet.query.get_or_404(id)
         data = request.get_json()
-        for field in ["name", "species", "breed", "sex", "color", "medical_notes", "owner_id"]:
+        for field in ["name", "species", "breed", "sex", "color", "owner_name"]:
             setattr(pet, field, data.get(field, getattr(pet, field)))
-        if "dob" in data:
-            pet.dob = datetime.fromisoformat(data["dob"]) if data["dob"] else None
         pet.pet_treatments.clear()
         for t in data.get("treatments", []):
             pt = PetTreatment(
