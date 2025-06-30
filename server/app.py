@@ -222,11 +222,10 @@ class TreatmentList(Resource):
                 staff_id=data.get("staff_id")
             )
             db.session.add(treat)
-            db.session.flush()  # flush to get treat.id
+            db.session.flush()
 
             pet_id = data.get("pet_id")
             if pet_id:
-                from models import PetTreatment
                 pet_treatment = PetTreatment(
                     pet_id=pet_id,
                     treatment_id=treat.id,
@@ -291,10 +290,22 @@ class BillingDetail(Resource):
             db.session.rollback()
             return {"error": str(e)}, 400
 
+    def delete(self, id):
+        bill = Billing.query.get(id)
+        if not bill:
+            return {"error": "Not found"}, 404
+        try:
+            db.session.delete(bill)
+            db.session.commit()
+            return {"message": "Billing record deleted"}, 200
+        except Exception as e:
+            db.session.rollback()
+            return {"error": str(e)}, 400
+
     def options(self, id):
         return '', 200
 
-# --- API Route Registration ---
+# --- API Routes ---
 api.add_resource(StaffList, '/api/staff')
 api.add_resource(OwnerList, '/api/owners')
 api.add_resource(PetList, '/api/pets')
@@ -305,7 +316,7 @@ api.add_resource(MedicationList, '/api/medications')
 api.add_resource(BillingList, '/api/billings')
 api.add_resource(BillingDetail, '/api/billings/<int:id>')
 
-# --- Routes ---
+# --- Home and Error Routes ---
 @app.route('/')
 def index():
     return render_template("index.html")
